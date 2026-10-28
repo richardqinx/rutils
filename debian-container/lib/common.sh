@@ -77,7 +77,7 @@ base-create 选项：
   --exclude PACKAGES  要排除的软件包，使用逗号分隔
 
 网络选项：
-  --network MODE      网络模式：none（默认）或 host
+  --network MODE      网络模式：none（默认）、host 或 nat
 
 挂载选项：
   --mount SPEC        目录挂载：HOST:CONTAINER[:ro|rw]
@@ -97,6 +97,11 @@ profile 配置项：
   DEBIAN_INCLUDE    额外软件包，使用逗号分隔
   DEBIAN_EXCLUDE    要排除的软件包，使用逗号分隔
   DEBIAN_NETWORK    默认网络模式（默认：none）
+  DEBIAN_NAT_BRIDGE NAT 网桥名称（默认：rutils0）
+  DEBIAN_NAT_NETWORK NAT 子网（默认：10.88.0.0/24）
+  DEBIAN_NAT_GATEWAY NAT 网关地址（默认：10.88.0.1）
+  DEBIAN_NAT_ADDRESS 容器地址（默认：10.88.0.2）
+  DEBIAN_NAT_DNS    NAT 模式 DNS（默认：1.1.1.1）
 EOF
 }
 

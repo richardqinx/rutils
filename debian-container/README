@@ -46,6 +46,7 @@ sudo ./debian-container.sh resize test-3 --size 12G
 
 sudo ./debian-container.sh enter test-1
 sudo ./debian-container.sh enter test-1 --network host
+sudo ./debian-container.sh enter test-1 --network nat
 sudo ./debian-container.sh enter test-1 --mount /home/richard/project:/workspace:rw
 sudo ./debian-container.sh enter test-1 --mount /home/richard/data:/data:ro
 
@@ -53,6 +54,7 @@ sudo ./debian-container.sh enter test-1 --mount /home/richard/data:/data:ro
 
 sudo ./debian-container.sh exec test-1 -- uname -a
 sudo ./debian-container.sh exec test-1 --network host -- apt-get update
+sudo ./debian-container.sh exec test-1 --network nat -- apt-get update
 sudo ./debian-container.sh exec test-1 --mount /home/richard/project:/workspace:rw -- make -C /workspace
 
 列出和查看容器：
@@ -95,7 +97,12 @@ DEBIAN_ARCH     目标架构
 DEBIAN_MIRROR   Debian 镜像地址
 DEBIAN_INCLUDE  额外软件包，使用逗号分隔
 DEBIAN_EXCLUDE  要排除的软件包，使用逗号分隔
-DEBIAN_NETWORK  默认网络模式，none 或 host
+DEBIAN_NETWORK  默认网络模式，none、host 或 nat
+DEBIAN_NAT_BRIDGE  NAT 网桥名称，默认 rutils0
+DEBIAN_NAT_NETWORK NAT 子网，默认 10.88.0.0/24
+DEBIAN_NAT_GATEWAY NAT 网关地址，默认 10.88.0.1
+DEBIAN_NAT_ADDRESS NAT 容器地址，默认 10.88.0.2
+DEBIAN_NAT_DNS NAT 模式 DNS，默认 1.1.1.1
 
 挂载参数格式：
 

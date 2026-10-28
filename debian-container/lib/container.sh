@@ -247,6 +247,11 @@ dc_enter() {
     bind_args+=(--mount "$spec")
   done
 
+  if [[ "$network_mode" == nat ]]; then
+    dc_network_nat_run _enter "${bind_args[@]}"
+    return
+  fi
+
   unshare --mount --uts --ipc --pid --fork --propagation private \
     "${DC_NETWORK_UNSHARE_ARGS[@]}" -- bash "$DC_SCRIPT" _enter "$DC_INSTANCE" "${bind_args[@]}"
 }
@@ -255,6 +260,7 @@ dc_enter_rootfs() {
   dc_bind_load_options "$@"
   dc_mount_root
   trap dc_cleanup_mounts EXIT
+  dc_network_configure_rootfs
   dc_mount_virtual_filesystems
   dc_bind_mount_all
   hostname debian-container
@@ -306,6 +312,11 @@ dc_exec() {
     bind_args+=(--mount "$spec")
   done
 
+  if [[ "$network_mode" == nat ]]; then
+    dc_network_nat_run _exec "${bind_args[@]}" -- "$@"
+    return
+  fi
+
   unshare --mount --uts --ipc --pid --fork --propagation private \
     "${DC_NETWORK_UNSHARE_ARGS[@]}" -- \
     bash "$DC_SCRIPT" _exec "$DC_INSTANCE" "${bind_args[@]}" -- "$@"
@@ -335,6 +346,7 @@ dc_exec_rootfs() {
   (($# > 0)) || dc_die 'exec 需要一个命令。'
   dc_mount_root
   trap dc_cleanup_mounts EXIT
+  dc_network_configure_rootfs
   dc_mount_virtual_filesystems
   dc_bind_mount_all
   hostname debian-container
