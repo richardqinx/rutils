@@ -29,14 +29,22 @@ dc_usage() {
 用法：sudo bash $DC_SCRIPT <命令>
 
 命令：
-  init      创建 Debian 容器镜像
-  enter     进入容器
-  delete    删除容器镜像
+  base-create [路径]  下载一次并创建 debootstrap 软件包 tarball
+  init [选项]         创建 Debian 容器镜像
+  enter               进入容器
+  delete              删除容器镜像
+
+init 选项：
+  --tarball PATH      从本地 tarball 初始化，跳过软件包下载
 
 环境变量：
   DEBIAN_IMAGE      镜像路径（默认：当前目录/rootfs.ext4）
   DEBIAN_ROOT       挂载目录（默认：当前目录/debian-root）
   DEBIAN_LOCK_FILE  锁文件路径
+  DEBIAN_TARBALL    基础 tarball（默认：当前目录/debian-base.tar.gz）
+  DEBIAN_SUITE      Debian 版本（默认：stable）
+  DEBIAN_MIRROR     Debian 镜像地址
+  DEBIAN_INCLUDE    额外软件包，使用逗号分隔
 EOF
 }
 

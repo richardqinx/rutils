@@ -1,2 +1,3 @@
 rootfs.ext4
 debian-root/
+*.tar.gz

@@ -14,6 +14,7 @@ source "$DC_DIR/lib/mount.sh"
 source "$DC_DIR/lib/container.sh"
 
 DC_ACTION=${1:-}
+shift || true
 
 case "$DC_ACTION" in
   help|-h|--help)
@@ -25,15 +26,16 @@ esac
 dc_require_root
 
 case "$DC_ACTION" in
-  init|enter|delete)
+  base-create|init|enter|delete)
     # 防止多个会话同时读写同一 ext4 镜像。
     dc_acquire_lock
     ;;
 esac
 
 case "$DC_ACTION" in
-  init)    dc_init ;;
-  _init)   dc_init_rootfs ;;
+  base-create) dc_base_create "$@" ;;
+  init)    dc_init "$@" ;;
+  _init)   dc_init_rootfs "$@" ;;
   enter)   dc_enter ;;
   _enter)  dc_enter_rootfs ;;
   delete)  dc_delete ;;
