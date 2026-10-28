@@ -4,12 +4,18 @@
 
 dc_init() {
   local tarball=
+  local size=$DC_SIZE
 
   while (($# > 0)); do
     case "$1" in
       --tarball)
         (($# >= 2)) || dc_die '--tarball 需要一个文件路径。'
         tarball=$2
+        shift 2
+        ;;
+      --size)
+        (($# >= 2)) || dc_die '--size 需要一个大小。'
+        size=$2
         shift 2
         ;;
       --help|-h)
@@ -33,15 +39,39 @@ dc_init() {
     dc_die "实例已存在：$DC_INSTANCE。请使用 enter 进入，避免覆盖容器数据。"
   fi
 
-  mkdir -p "$DC_INSTANCE_DIR" "$DC_ROOT"
-  truncate -s 3G "$DC_IMAGE"
-  mkfs.ext4 -F -q -L DEBIAN_CONTAINER "$DC_IMAGE"
+  dc_create_image "$size"
   if [[ -n "$tarball" ]]; then
     unshare --mount --propagation private -- bash "$DC_SCRIPT" _init "$DC_INSTANCE" "$tarball"
   else
     unshare --mount --propagation private -- bash "$DC_SCRIPT" _init "$DC_INSTANCE"
   fi
   echo "初始化完成。执行 sudo bash $DC_SCRIPT enter $DC_INSTANCE 进入容器。"
+}
+
+dc_resize() {
+  local size=
+
+  while (($# > 0)); do
+    case "$1" in
+      --size)
+        (($# >= 2)) || dc_die '--size 需要一个大小。'
+        size=$2
+        shift 2
+        ;;
+      --help|-h)
+        dc_usage
+        return 0
+        ;;
+      *)
+        dc_die "未知的 resize 选项：$1"
+        ;;
+    esac
+  done
+
+  [[ -n "$size" ]] || dc_die 'resize 必须指定 --size。'
+  [[ -f "$DC_IMAGE" ]] || dc_die '没有找到镜像，请先运行 init。'
+  dc_resize_image "$size"
+  echo "实例已扩容：$DC_INSTANCE，新的大小为 $size"
 }
 
 dc_init_rootfs() {
@@ -236,9 +266,8 @@ dc_status() {
   echo "目录：$DC_INSTANCE_DIR"
   if [[ -f "$DC_IMAGE" ]]; then
     echo '镜像：存在'
-  else
-    echo '镜像：不存在'
   fi
+  dc_status_image
 }
 
 dc_delete() {

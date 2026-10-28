@@ -11,6 +11,7 @@ DC_DIR=$(dirname -- "$DC_SCRIPT")
 source "$DC_DIR/lib/config.sh"
 source "$DC_DIR/lib/common.sh"
 source "$DC_DIR/lib/network.sh"
+source "$DC_DIR/lib/storage.sh"
 source "$DC_DIR/lib/mount.sh"
 source "$DC_DIR/lib/container.sh"
 
@@ -27,14 +28,14 @@ esac
 dc_require_root
 
 case "$DC_ACTION" in
-  base-create|init|enter|exec|delete)
+  base-create|init|enter|exec|resize|delete)
     # 防止多个会话同时读写同一 ext4 镜像。
     dc_acquire_lock
     ;;
 esac
 
 case "$DC_ACTION" in
-  init|enter|exec|status|delete)
+  init|enter|exec|resize|status|delete)
     (($# > 0)) || dc_die "$DC_ACTION 需要实例名称。"
     dc_select_instance "$1"
     shift
@@ -54,6 +55,7 @@ case "$DC_ACTION" in
   _enter)  dc_enter_rootfs ;;
   exec)    dc_exec "$@" ;;
   _exec)   dc_exec_rootfs "$@" ;;
+  resize)  dc_resize "$@" ;;
   status)  dc_status ;;
   list)    dc_list ;;
   delete)  dc_delete ;;

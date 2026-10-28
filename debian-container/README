@@ -17,6 +17,11 @@ sudo ./debian-container.sh base-create \
 
 sudo ./debian-container.sh init test-1 --tarball ./debian-stable.tar.gz
 sudo ./debian-container.sh init test-2 --tarball ./debian-stable.tar.gz
+sudo ./debian-container.sh init test-3 --size 8G --tarball ./debian-stable.tar.gz
+
+扩容容器：
+
+sudo ./debian-container.sh resize test-3 --size 12G
 
 进入容器：
 
@@ -59,6 +64,7 @@ sudo env \
 可配置的环境变量：
 
 DEBIAN_INSTANCES 实例目录
+DEBIAN_SIZE     新实例镜像大小，默认 3G
 DEBIAN_LOCK_FILE 锁文件路径
 DEBIAN_TARBALL  默认基础 tarball 路径
 DEBIAN_SUITE    Debian 版本，默认 stable

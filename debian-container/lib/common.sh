@@ -53,12 +53,17 @@ dc_usage() {
   init NAME [选项]    创建指定名称的容器镜像
   enter NAME [选项]   进入指定容器
   exec NAME [选项]    在指定容器中执行命令
+  resize NAME [选项]  扩大指定容器的镜像
   status NAME         查看指定容器状态
   list                列出所有容器
   delete NAME         删除指定容器
 
 init 选项：
   --tarball PATH      从本地 tarball 初始化，跳过软件包下载
+  --size SIZE         镜像大小（默认：3G）
+
+resize 选项：
+  --size SIZE         新的镜像大小，只能扩大
 
 base-create 选项：
   --output PATH       输出 tarball 路径
@@ -73,6 +78,7 @@ base-create 选项：
 
 环境变量：
   DEBIAN_INSTANCES  实例目录（默认：当前目录/instances）
+  DEBIAN_SIZE       新实例镜像大小（默认：3G）
   DEBIAN_LOCK_FILE  锁文件路径（默认：/run/lock/debian-container.lock）
   DEBIAN_TARBALL    基础 tarball（默认：当前目录/debian-base.tar.gz）
   DEBIAN_SUITE      Debian 版本（默认：stable）

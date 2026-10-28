@@ -4,6 +4,7 @@
 
 # Keep instance data in the directory from which the tool is invoked for now.
 DC_INSTANCES=${DEBIAN_INSTANCES:-"$PWD/instances"}
+DC_SIZE=${DEBIAN_SIZE:-3G}
 DC_LOCK_FILE=${DEBIAN_LOCK_FILE:-/run/lock/debian-container.lock}
 DC_TARBALL=${DEBIAN_TARBALL:-"$PWD/debian-base.tar.gz"}
 DC_SUITE=${DEBIAN_SUITE:-stable}
