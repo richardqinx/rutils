@@ -24,23 +24,24 @@ dc_init() {
 
   dc_require_commands debootstrap unshare mkfs.ext4 mount chroot setpriv flock
 
-  if [[ -n "$tarball" && ! -f "$tarball" ]]; then
-    dc_die "找不到 tarball：$tarball"
+  if [[ -n "$tarball" ]]; then
+    tarball=$(readlink -f -- "$tarball")
+    [[ -f "$tarball" ]] || dc_die "找不到 tarball：$tarball"
   fi
 
-  if [[ -e "$DC_IMAGE" ]]; then
-    dc_die "镜像已存在：$DC_IMAGE。请使用 enter 进入，避免覆盖容器数据。"
+  if [[ -e "$DC_INSTANCE_DIR" ]]; then
+    dc_die "实例已存在：$DC_INSTANCE。请使用 enter 进入，避免覆盖容器数据。"
   fi
 
-  mkdir -p "$(dirname -- "$DC_IMAGE")" "$DC_ROOT"
+  mkdir -p "$DC_INSTANCE_DIR" "$DC_ROOT"
   truncate -s 3G "$DC_IMAGE"
   mkfs.ext4 -F -q -L DEBIAN_CONTAINER "$DC_IMAGE"
   if [[ -n "$tarball" ]]; then
-    unshare --mount --propagation private -- bash "$DC_SCRIPT" _init "$tarball"
+    unshare --mount --propagation private -- bash "$DC_SCRIPT" _init "$DC_INSTANCE" "$tarball"
   else
-    unshare --mount --propagation private -- bash "$DC_SCRIPT" _init
+    unshare --mount --propagation private -- bash "$DC_SCRIPT" _init "$DC_INSTANCE"
   fi
-  echo "初始化完成。执行 sudo bash $DC_SCRIPT enter 进入容器。"
+  echo "初始化完成。执行 sudo bash $DC_SCRIPT enter $DC_INSTANCE 进入容器。"
 }
 
 dc_init_rootfs() {
@@ -102,7 +103,7 @@ dc_enter() {
   [[ -f "$DC_IMAGE" ]] || dc_die '没有找到镜像，请先运行 init。'
 
   # 单独创建网络命名空间，暂时没有联网功能。
-  unshare --mount --uts --ipc --pid --net --fork --propagation private -- bash "$DC_SCRIPT" _enter
+  unshare --mount --uts --ipc --pid --net --fork --propagation private -- bash "$DC_SCRIPT" _enter "$DC_INSTANCE"
 }
 
 dc_enter_rootfs() {
@@ -117,9 +118,44 @@ dc_enter_rootfs() {
     chroot "$DC_ROOT" /bin/bash -l
 }
 
+dc_exec() {
+  (($# > 0)) || dc_die '用法：exec NAME -- 命令 [参数...]'
+  [[ "$1" == -- ]] || dc_die '用法：exec NAME -- 命令 [参数...]'
+  shift
+  (($# > 0)) || dc_die 'exec 需要一个命令。'
+  [[ -f "$DC_IMAGE" ]] || dc_die '没有找到镜像，请先运行 init。'
+
+  unshare --mount --uts --ipc --pid --net --fork --propagation private -- \
+    bash "$DC_SCRIPT" _exec "$DC_INSTANCE" "$@"
+}
+
+dc_exec_rootfs() {
+  dc_mount_root
+  trap dc_cleanup_mounts EXIT
+  dc_mount_virtual_filesystems
+  hostname debian-container
+
+  setpriv --bounding-set=-sys_admin,-net_admin,-net_raw,-sys_module,-sys_boot,-sys_time,-sys_rawio,-sys_ptrace,-syslog -- \
+    chroot "$DC_ROOT" "$@"
+}
+
+dc_status() {
+  echo "实例：$DC_INSTANCE"
+  echo "目录：$DC_INSTANCE_DIR"
+  if [[ -f "$DC_IMAGE" ]]; then
+    echo '镜像：存在'
+  else
+    echo '镜像：不存在'
+  fi
+}
+
 dc_delete() {
-  [[ -f "$DC_IMAGE" ]] || { echo 'Debian 镜像已不存在。'; return 0; }
-  rm -- "$DC_IMAGE"
-  echo 'Debian 镜像已删除。'
+  [[ -d "$DC_INSTANCE_DIR" ]] || { echo 'Debian 实例已不存在。'; return 0; }
+  dc_require_commands findmnt
+  if findmnt --mountpoint "$DC_ROOT" >/dev/null 2>&1; then
+    dc_die "实例仍处于挂载状态：$DC_INSTANCE"
+  fi
+  rm -rf -- "$DC_INSTANCE_DIR"
+  echo "Debian 实例已删除：$DC_INSTANCE"
 }
 
