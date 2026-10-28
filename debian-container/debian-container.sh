@@ -15,6 +15,7 @@ source "$DC_DIR/lib/storage.sh"
 source "$DC_DIR/lib/mount.sh"
 source "$DC_DIR/lib/binds.sh"
 source "$DC_DIR/lib/profiles.sh"
+source "$DC_DIR/lib/manifest.sh"
 source "$DC_DIR/lib/container.sh"
 
 DC_ACTION=${1:-}
@@ -51,6 +52,7 @@ esac
 
 case "$DC_ACTION" in
   base-create) dc_base_create "$@" ;;
+  base-info)   dc_manifest_info "$@" ;;
   init)    dc_init "$@" ;;
   _init)   dc_init_rootfs "$@" ;;
   enter)   dc_enter "$@" ;;

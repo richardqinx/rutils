@@ -50,6 +50,7 @@ dc_usage() {
 
 命令：
   base-create [选项]  下载一次并创建 debootstrap 软件包 tarball
+  base-info TAR      查看基础 tarball 的 manifest
   init NAME [选项]    创建指定名称的容器镜像
   enter NAME [选项]   进入指定容器
   exec NAME [选项]    在指定容器中执行命令
@@ -68,6 +69,7 @@ resize 选项：
 
 base-create 选项：
   --output PATH       输出 tarball 路径
+  --manifest PATH     manifest 路径（默认：TARBALL.manifest）
   --suite SUITE       Debian 版本
   --arch ARCH         目标架构
   --mirror URL        Debian 镜像地址

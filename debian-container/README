@@ -13,6 +13,14 @@ sudo ./debian-container.sh base-create \
   --arch amd64 \
   --include sudo,vim-tiny,curl
 
+默认同时生成：
+
+debian-stable.tar.gz.manifest
+
+查看基础 tarball 信息：
+
+sudo ./debian-container.sh base-info ./debian-stable.tar.gz
+
 从 tarball 创建容器：
 
 sudo ./debian-container.sh init test-1 --tarball ./debian-stable.tar.gz

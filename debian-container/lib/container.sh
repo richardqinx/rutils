@@ -128,6 +128,7 @@ dc_base_create() {
   local mirror=$DC_MIRROR
   local include=$DC_INCLUDE
   local exclude=$DC_EXCLUDE
+  local manifest=
   local temporary_root
   local -a debootstrap_options=(--variant=minbase)
 
@@ -136,6 +137,11 @@ dc_base_create() {
       --output)
         (($# >= 2)) || dc_die '--output 需要一个文件路径。'
         output=$2
+        shift 2
+        ;;
+      --manifest)
+        (($# >= 2)) || dc_die '--manifest 需要一个文件路径。'
+        manifest=$2
         shift 2
         ;;
       --suite)
@@ -174,10 +180,18 @@ dc_base_create() {
   done
 
   output=$(readlink -m -- "$output")
+  if [[ -z "$manifest" ]]; then
+    manifest="$output.manifest"
+  else
+    manifest=$(readlink -m -- "$manifest")
+  fi
+  [[ "$manifest" != "$output" ]] || dc_die 'manifest 不能覆盖 tarball。'
   [[ ! -e "$output" ]] || dc_die "tarball 已存在：$output"
+  [[ ! -e "$manifest" ]] || dc_die "manifest 已存在：$manifest"
 
-  dc_require_commands debootstrap mktemp readlink
+  dc_require_commands awk date debootstrap mktemp readlink sha256sum
   mkdir -p "$(dirname -- "$output")"
+  mkdir -p "$(dirname -- "$manifest")"
   temporary_root=$(mktemp -d)
 
   [[ -n "$arch" ]] && debootstrap_options+=("--arch=$arch")
@@ -192,7 +206,9 @@ dc_base_create() {
       "$suite" "$temporary_root" "$mirror"
   )
 
+  dc_manifest_write "$manifest" "$output" "$suite" "${arch:-native}" "$mirror" "$include" "$exclude"
   echo "基础 tarball 已创建：$output"
+  echo "manifest 已创建：$manifest"
 }
 
 dc_enter() {
