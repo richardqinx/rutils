@@ -51,14 +51,17 @@ dc_usage() {
 命令：
   base-create [路径]  下载一次并创建 debootstrap 软件包 tarball
   init NAME [选项]    创建指定名称的容器镜像
-  enter NAME          进入指定容器
-  exec NAME -- CMD    在指定容器中执行命令
+  enter NAME [选项]   进入指定容器
+  exec NAME [选项]    在指定容器中执行命令
   status NAME         查看指定容器状态
   list                列出所有容器
   delete NAME         删除指定容器
 
 init 选项：
   --tarball PATH      从本地 tarball 初始化，跳过软件包下载
+
+网络选项：
+  --network MODE      网络模式：none（默认）或 host
 
 环境变量：
   DEBIAN_INSTANCES  实例目录（默认：当前目录/instances）
@@ -67,6 +70,7 @@ init 选项：
   DEBIAN_SUITE      Debian 版本（默认：stable）
   DEBIAN_MIRROR     Debian 镜像地址
   DEBIAN_INCLUDE    额外软件包，使用逗号分隔
+  DEBIAN_NETWORK    默认网络模式（默认：none）
 EOF
 }
 

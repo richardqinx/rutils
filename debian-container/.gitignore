@@ -1,3 +1,4 @@
 rootfs.ext4
 debian-root/
+instances/
 *.tar.gz

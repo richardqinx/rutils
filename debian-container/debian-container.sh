@@ -10,6 +10,7 @@ DC_DIR=$(dirname -- "$DC_SCRIPT")
 
 source "$DC_DIR/lib/config.sh"
 source "$DC_DIR/lib/common.sh"
+source "$DC_DIR/lib/network.sh"
 source "$DC_DIR/lib/mount.sh"
 source "$DC_DIR/lib/container.sh"
 

@@ -17,10 +17,12 @@ sudo ./debian-container.sh init test-2 --tarball ./debian-stable.tar.gz
 进入容器：
 
 sudo ./debian-container.sh enter test-1
+sudo ./debian-container.sh enter test-1 --network host
 
 在容器中执行命令：
 
 sudo ./debian-container.sh exec test-1 -- uname -a
+sudo ./debian-container.sh exec test-1 --network host -- apt-get update
 
 列出和查看容器：
 
@@ -58,5 +60,6 @@ DEBIAN_TARBALL  默认基础 tarball 路径
 DEBIAN_SUITE    Debian 版本，默认 stable
 DEBIAN_MIRROR   Debian 镜像地址
 DEBIAN_INCLUDE  额外软件包，使用逗号分隔
+DEBIAN_NETWORK  默认网络模式，none 或 host
 
 脚本实现按职责拆分在 lib/ 目录中，入口脚本只负责加载模块和分发命令。

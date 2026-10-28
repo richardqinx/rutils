@@ -100,10 +100,30 @@ dc_base_create() {
 }
 
 dc_enter() {
-  [[ -f "$DC_IMAGE" ]] || dc_die '没有找到镜像，请先运行 init。'
+  local network_mode=$DC_NETWORK_MODE
 
-  # 单独创建网络命名空间，暂时没有联网功能。
-  unshare --mount --uts --ipc --pid --net --fork --propagation private -- bash "$DC_SCRIPT" _enter "$DC_INSTANCE"
+  while (($# > 0)); do
+    case "$1" in
+      --network)
+        (($# >= 2)) || dc_die '--network 需要一个模式。'
+        network_mode=$2
+        shift 2
+        ;;
+      --help|-h)
+        dc_usage
+        return 0
+        ;;
+      *)
+        dc_die "未知的 enter 选项：$1"
+        ;;
+    esac
+  done
+
+  [[ -f "$DC_IMAGE" ]] || dc_die '没有找到镜像，请先运行 init。'
+  dc_network_prepare "$network_mode"
+
+  unshare --mount --uts --ipc --pid --fork --propagation private \
+    "${DC_NETWORK_UNSHARE_ARGS[@]}" -- bash "$DC_SCRIPT" _enter "$DC_INSTANCE"
 }
 
 dc_enter_rootfs() {
@@ -119,13 +139,35 @@ dc_enter_rootfs() {
 }
 
 dc_exec() {
-  (($# > 0)) || dc_die '用法：exec NAME -- 命令 [参数...]'
-  [[ "$1" == -- ]] || dc_die '用法：exec NAME -- 命令 [参数...]'
-  shift
+  local network_mode=$DC_NETWORK_MODE
+
+  while (($# > 0)); do
+    case "$1" in
+      --network)
+        (($# >= 2)) || dc_die '--network 需要一个模式。'
+        network_mode=$2
+        shift 2
+        ;;
+      --)
+        shift
+        break
+        ;;
+      --help|-h)
+        dc_usage
+        return 0
+        ;;
+      *)
+        dc_die '用法：exec NAME [--network MODE] -- 命令 [参数...]'
+        ;;
+    esac
+  done
+
   (($# > 0)) || dc_die 'exec 需要一个命令。'
   [[ -f "$DC_IMAGE" ]] || dc_die '没有找到镜像，请先运行 init。'
+  dc_network_prepare "$network_mode"
 
-  unshare --mount --uts --ipc --pid --net --fork --propagation private -- \
+  unshare --mount --uts --ipc --pid --fork --propagation private \
+    "${DC_NETWORK_UNSHARE_ARGS[@]}" -- \
     bash "$DC_SCRIPT" _exec "$DC_INSTANCE" "$@"
 }
 
