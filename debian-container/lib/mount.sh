@@ -3,6 +3,7 @@
 # Copyright (C) 2026 by Richard Qin
 
 dc_cleanup_mounts() {
+  dc_bind_cleanup
   umount "$DC_ROOT/dev/pts" 2>/dev/null || true
   umount "$DC_ROOT/dev" 2>/dev/null || true
   umount "$DC_ROOT/proc" 2>/dev/null || true

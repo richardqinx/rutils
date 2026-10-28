@@ -13,6 +13,7 @@ source "$DC_DIR/lib/common.sh"
 source "$DC_DIR/lib/network.sh"
 source "$DC_DIR/lib/storage.sh"
 source "$DC_DIR/lib/mount.sh"
+source "$DC_DIR/lib/binds.sh"
 source "$DC_DIR/lib/container.sh"
 
 DC_ACTION=${1:-}
@@ -52,7 +53,7 @@ case "$DC_ACTION" in
   init)    dc_init "$@" ;;
   _init)   dc_init_rootfs "$@" ;;
   enter)   dc_enter "$@" ;;
-  _enter)  dc_enter_rootfs ;;
+  _enter)  dc_enter_rootfs "$@" ;;
   exec)    dc_exec "$@" ;;
   _exec)   dc_exec_rootfs "$@" ;;
   resize)  dc_resize "$@" ;;

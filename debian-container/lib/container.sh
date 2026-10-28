@@ -181,12 +181,19 @@ dc_base_create() {
 
 dc_enter() {
   local network_mode=$DC_NETWORK_MODE
+  local -a bind_args=()
 
   while (($# > 0)); do
     case "$1" in
       --network)
         (($# >= 2)) || dc_die '--network 需要一个模式。'
         network_mode=$2
+        shift 2
+        ;;
+      --mount)
+        (($# >= 2)) || dc_die '--mount 需要一个挂载参数。'
+        dc_bind_add "$2"
+        bind_args+=(--mount "${DC_BIND_SPECS[$((${#DC_BIND_SPECS[@]} - 1))]}")
         shift 2
         ;;
       --help|-h)
@@ -203,13 +210,15 @@ dc_enter() {
   dc_network_prepare "$network_mode"
 
   unshare --mount --uts --ipc --pid --fork --propagation private \
-    "${DC_NETWORK_UNSHARE_ARGS[@]}" -- bash "$DC_SCRIPT" _enter "$DC_INSTANCE"
+    "${DC_NETWORK_UNSHARE_ARGS[@]}" -- bash "$DC_SCRIPT" _enter "$DC_INSTANCE" "${bind_args[@]}"
 }
 
 dc_enter_rootfs() {
+  dc_bind_load_options "$@"
   dc_mount_root
   trap dc_cleanup_mounts EXIT
   dc_mount_virtual_filesystems
+  dc_bind_mount_all
   hostname debian-container
   echo '已进入独立的 Debian 实验环境；输入 exit 可退出容器。'
 
@@ -220,12 +229,19 @@ dc_enter_rootfs() {
 
 dc_exec() {
   local network_mode=$DC_NETWORK_MODE
+  local -a bind_args=()
 
   while (($# > 0)); do
     case "$1" in
       --network)
         (($# >= 2)) || dc_die '--network 需要一个模式。'
         network_mode=$2
+        shift 2
+        ;;
+      --mount)
+        (($# >= 2)) || dc_die '--mount 需要一个挂载参数。'
+        dc_bind_add "$2"
+        bind_args+=(--mount "${DC_BIND_SPECS[$((${#DC_BIND_SPECS[@]} - 1))]}")
         shift 2
         ;;
       --)
@@ -248,17 +264,39 @@ dc_exec() {
 
   unshare --mount --uts --ipc --pid --fork --propagation private \
     "${DC_NETWORK_UNSHARE_ARGS[@]}" -- \
-    bash "$DC_SCRIPT" _exec "$DC_INSTANCE" "$@"
+    bash "$DC_SCRIPT" _exec "$DC_INSTANCE" "${bind_args[@]}" -- "$@"
 }
 
 dc_exec_rootfs() {
+  local -a command_args=()
+
+  while (($# > 0)); do
+    case "$1" in
+      --mount)
+        (($# >= 2)) || dc_die '--mount 需要一个挂载参数。'
+        dc_bind_add "$2"
+        shift 2
+        ;;
+      --)
+        shift
+        command_args=("$@")
+        break
+        ;;
+      *)
+        dc_die 'exec 子进程参数格式无效。'
+        ;;
+    esac
+  done
+
+  (($# > 0)) || dc_die 'exec 需要一个命令。'
   dc_mount_root
   trap dc_cleanup_mounts EXIT
   dc_mount_virtual_filesystems
+  dc_bind_mount_all
   hostname debian-container
 
   setpriv --bounding-set=-sys_admin,-net_admin,-net_raw,-sys_module,-sys_boot,-sys_time,-sys_rawio,-sys_ptrace,-syslog -- \
-    chroot "$DC_ROOT" "$@"
+    chroot "$DC_ROOT" "${command_args[@]}"
 }
 
 dc_status() {

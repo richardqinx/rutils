@@ -27,11 +27,14 @@ sudo ./debian-container.sh resize test-3 --size 12G
 
 sudo ./debian-container.sh enter test-1
 sudo ./debian-container.sh enter test-1 --network host
+sudo ./debian-container.sh enter test-1 --mount /home/richard/project:/workspace:rw
+sudo ./debian-container.sh enter test-1 --mount /home/richard/data:/data:ro
 
 在容器中执行命令：
 
 sudo ./debian-container.sh exec test-1 -- uname -a
 sudo ./debian-container.sh exec test-1 --network host -- apt-get update
+sudo ./debian-container.sh exec test-1 --mount /home/richard/project:/workspace:rw -- make -C /workspace
 
 列出和查看容器：
 
@@ -73,5 +76,11 @@ DEBIAN_MIRROR   Debian 镜像地址
 DEBIAN_INCLUDE  额外软件包，使用逗号分隔
 DEBIAN_EXCLUDE  要排除的软件包，使用逗号分隔
 DEBIAN_NETWORK  默认网络模式，none 或 host
+
+挂载参数格式：
+
+HOST:CONTAINER[:ro|rw]
+
+目前只支持目录挂载，默认模式为 rw。
 
 脚本实现按职责拆分在 lib/ 目录中，入口脚本只负责加载模块和分发命令。

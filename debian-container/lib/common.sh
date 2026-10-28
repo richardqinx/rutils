@@ -76,6 +76,9 @@ base-create 选项：
 网络选项：
   --network MODE      网络模式：none（默认）或 host
 
+挂载选项：
+  --mount SPEC        目录挂载：HOST:CONTAINER[:ro|rw]
+
 环境变量：
   DEBIAN_INSTANCES  实例目录（默认：当前目录/instances）
   DEBIAN_SIZE       新实例镜像大小（默认：3G）
