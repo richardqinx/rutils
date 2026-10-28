@@ -19,6 +19,17 @@ sudo ./debian-container.sh init test-1 --tarball ./debian-stable.tar.gz
 sudo ./debian-container.sh init test-2 --tarball ./debian-stable.tar.gz
 sudo ./debian-container.sh init test-3 --size 8G --tarball ./debian-stable.tar.gz
 
+使用 profile 创建容器：
+
+profile 文件内容：
+
+network=none
+mount=/home/richard/project:/workspace:rw
+mount=/home/richard/data:/data:ro
+
+sudo ./debian-container.sh init lab --profile ./lab.profile --tarball ./debian-stable.tar.gz
+sudo ./debian-container.sh enter lab
+
 扩容容器：
 
 sudo ./debian-container.sh resize test-3 --size 12G
@@ -53,6 +64,7 @@ sudo ./debian-container.sh init test-3
 
 instances/test-1/rootfs.ext4
 instances/test-1/root/
+instances/lab/config
 
 默认基础 tarball：
 
@@ -82,5 +94,8 @@ DEBIAN_NETWORK  默认网络模式，none 或 host
 HOST:CONTAINER[:ro|rw]
 
 目前只支持目录挂载，默认模式为 rw。
+
+实例 profile 保存在 instances/NAME/config，支持 network 和 mount 配置项。
+enter 或 exec 的命令行选项会覆盖 profile 中的网络模式，并追加挂载项。
 
 脚本实现按职责拆分在 lib/ 目录中，入口脚本只负责加载模块和分发命令。

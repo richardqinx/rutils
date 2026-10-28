@@ -61,6 +61,7 @@ dc_usage() {
 init 选项：
   --tarball PATH      从本地 tarball 初始化，跳过软件包下载
   --size SIZE         镜像大小（默认：3G）
+  --profile PATH      复制实例 profile
 
 resize 选项：
   --size SIZE         新的镜像大小，只能扩大
@@ -78,6 +79,10 @@ base-create 选项：
 
 挂载选项：
   --mount SPEC        目录挂载：HOST:CONTAINER[:ro|rw]
+
+profile 配置项：
+  network=MODE
+  mount=HOST:CONTAINER[:ro|rw]
 
 环境变量：
   DEBIAN_INSTANCES  实例目录（默认：当前目录/instances）

@@ -14,6 +14,7 @@ source "$DC_DIR/lib/network.sh"
 source "$DC_DIR/lib/storage.sh"
 source "$DC_DIR/lib/mount.sh"
 source "$DC_DIR/lib/binds.sh"
+source "$DC_DIR/lib/profiles.sh"
 source "$DC_DIR/lib/container.sh"
 
 DC_ACTION=${1:-}

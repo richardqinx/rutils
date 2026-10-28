@@ -5,6 +5,7 @@
 dc_init() {
   local tarball=
   local size=$DC_SIZE
+  local profile=
 
   while (($# > 0)); do
     case "$1" in
@@ -16,6 +17,11 @@ dc_init() {
       --size)
         (($# >= 2)) || dc_die '--size 需要一个大小。'
         size=$2
+        shift 2
+        ;;
+      --profile)
+        (($# >= 2)) || dc_die '--profile 需要一个文件路径。'
+        profile=$2
         shift 2
         ;;
       --help|-h)
@@ -34,6 +40,10 @@ dc_init() {
     tarball=$(readlink -f -- "$tarball")
     [[ -f "$tarball" ]] || dc_die "找不到 tarball：$tarball"
   fi
+  if [[ -n "$profile" ]]; then
+    profile=$(readlink -f -- "$profile")
+    [[ -f "$profile" ]] || dc_die "找不到 profile：$profile"
+  fi
 
   if [[ -e "$DC_INSTANCE_DIR" ]]; then
     dc_die "实例已存在：$DC_INSTANCE。请使用 enter 进入，避免覆盖容器数据。"
@@ -44,6 +54,12 @@ dc_init() {
     unshare --mount --propagation private -- bash "$DC_SCRIPT" _init "$DC_INSTANCE" "$tarball"
   else
     unshare --mount --propagation private -- bash "$DC_SCRIPT" _init "$DC_INSTANCE"
+  fi
+  DC_PROFILE_FILE="$DC_INSTANCE_DIR/config"
+  if [[ -n "$profile" ]]; then
+    cp -- "$profile" "$DC_PROFILE_FILE"
+  else
+    dc_profile_write_default "$DC_NETWORK_MODE"
   fi
   echo "初始化完成。执行 sudo bash $DC_SCRIPT enter $DC_INSTANCE 进入容器。"
 }
@@ -182,6 +198,10 @@ dc_base_create() {
 dc_enter() {
   local network_mode=$DC_NETWORK_MODE
   local -a bind_args=()
+  local spec
+
+  dc_profile_load
+  network_mode=$DC_PROFILE_NETWORK
 
   while (($# > 0)); do
     case "$1" in
@@ -193,7 +213,6 @@ dc_enter() {
       --mount)
         (($# >= 2)) || dc_die '--mount 需要一个挂载参数。'
         dc_bind_add "$2"
-        bind_args+=(--mount "${DC_BIND_SPECS[$((${#DC_BIND_SPECS[@]} - 1))]}")
         shift 2
         ;;
       --help|-h)
@@ -208,6 +227,9 @@ dc_enter() {
 
   [[ -f "$DC_IMAGE" ]] || dc_die '没有找到镜像，请先运行 init。'
   dc_network_prepare "$network_mode"
+  for spec in "${DC_BIND_SPECS[@]}"; do
+    bind_args+=(--mount "$spec")
+  done
 
   unshare --mount --uts --ipc --pid --fork --propagation private \
     "${DC_NETWORK_UNSHARE_ARGS[@]}" -- bash "$DC_SCRIPT" _enter "$DC_INSTANCE" "${bind_args[@]}"
@@ -230,6 +252,10 @@ dc_enter_rootfs() {
 dc_exec() {
   local network_mode=$DC_NETWORK_MODE
   local -a bind_args=()
+  local spec
+
+  dc_profile_load
+  network_mode=$DC_PROFILE_NETWORK
 
   while (($# > 0)); do
     case "$1" in
@@ -241,7 +267,6 @@ dc_exec() {
       --mount)
         (($# >= 2)) || dc_die '--mount 需要一个挂载参数。'
         dc_bind_add "$2"
-        bind_args+=(--mount "${DC_BIND_SPECS[$((${#DC_BIND_SPECS[@]} - 1))]}")
         shift 2
         ;;
       --)
@@ -261,6 +286,9 @@ dc_exec() {
   (($# > 0)) || dc_die 'exec 需要一个命令。'
   [[ -f "$DC_IMAGE" ]] || dc_die '没有找到镜像，请先运行 init。'
   dc_network_prepare "$network_mode"
+  for spec in "${DC_BIND_SPECS[@]}"; do
+    bind_args+=(--mount "$spec")
+  done
 
   unshare --mount --uts --ipc --pid --fork --propagation private \
     "${DC_NETWORK_UNSHARE_ARGS[@]}" -- \
@@ -300,8 +328,15 @@ dc_exec_rootfs() {
 }
 
 dc_status() {
+  local spec
+
+  dc_profile_load
   echo "实例：$DC_INSTANCE"
   echo "目录：$DC_INSTANCE_DIR"
+  echo "网络：$DC_PROFILE_NETWORK"
+  for spec in "${DC_BIND_SPECS[@]}"; do
+    echo "挂载：$spec"
+  done
   if [[ -f "$DC_IMAGE" ]]; then
     echo '镜像：存在'
   fi
