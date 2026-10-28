@@ -49,7 +49,7 @@ dc_usage() {
 用法：sudo bash $DC_SCRIPT <命令>
 
 命令：
-  base-create [路径]  下载一次并创建 debootstrap 软件包 tarball
+  base-create [选项]  下载一次并创建 debootstrap 软件包 tarball
   init NAME [选项]    创建指定名称的容器镜像
   enter NAME [选项]   进入指定容器
   exec NAME [选项]    在指定容器中执行命令
@@ -60,6 +60,14 @@ dc_usage() {
 init 选项：
   --tarball PATH      从本地 tarball 初始化，跳过软件包下载
 
+base-create 选项：
+  --output PATH       输出 tarball 路径
+  --suite SUITE       Debian 版本
+  --arch ARCH         目标架构
+  --mirror URL        Debian 镜像地址
+  --include PACKAGES  要加入的软件包，使用逗号分隔
+  --exclude PACKAGES  要排除的软件包，使用逗号分隔
+
 网络选项：
   --network MODE      网络模式：none（默认）或 host
 
@@ -68,8 +76,10 @@ init 选项：
   DEBIAN_LOCK_FILE  锁文件路径（默认：/run/lock/debian-container.lock）
   DEBIAN_TARBALL    基础 tarball（默认：当前目录/debian-base.tar.gz）
   DEBIAN_SUITE      Debian 版本（默认：stable）
+  DEBIAN_ARCH       目标架构
   DEBIAN_MIRROR     Debian 镜像地址
   DEBIAN_INCLUDE    额外软件包，使用逗号分隔
+  DEBIAN_EXCLUDE    要排除的软件包，使用逗号分隔
   DEBIAN_NETWORK    默认网络模式（默认：none）
 EOF
 }

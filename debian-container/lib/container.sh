@@ -76,10 +76,57 @@ dc_init_rootfs() {
 }
 
 dc_base_create() {
-  local output=${1:-$DC_TARBALL}
+  local output=$DC_TARBALL
+  local suite=$DC_SUITE
+  local arch=$DC_ARCH
+  local mirror=$DC_MIRROR
+  local include=$DC_INCLUDE
+  local exclude=$DC_EXCLUDE
   local temporary_root
+  local -a debootstrap_options=(--variant=minbase)
 
-  (($# <= 1)) || dc_die '用法：base-create [tarball 路径]'
+  while (($# > 0)); do
+    case "$1" in
+      --output)
+        (($# >= 2)) || dc_die '--output 需要一个文件路径。'
+        output=$2
+        shift 2
+        ;;
+      --suite)
+        (($# >= 2)) || dc_die '--suite 需要一个版本名称。'
+        suite=$2
+        shift 2
+        ;;
+      --arch)
+        (($# >= 2)) || dc_die '--arch 需要一个架构名称。'
+        arch=$2
+        shift 2
+        ;;
+      --mirror)
+        (($# >= 2)) || dc_die '--mirror 需要一个镜像地址。'
+        mirror=$2
+        shift 2
+        ;;
+      --include)
+        (($# >= 2)) || dc_die '--include 需要软件包列表。'
+        include=$2
+        shift 2
+        ;;
+      --exclude)
+        (($# >= 2)) || dc_die '--exclude 需要软件包列表。'
+        exclude=$2
+        shift 2
+        ;;
+      --help|-h)
+        dc_usage
+        return 0
+        ;;
+      *)
+        dc_die "未知的 base-create 选项：$1"
+        ;;
+    esac
+  done
+
   output=$(readlink -m -- "$output")
   [[ ! -e "$output" ]] || dc_die "tarball 已存在：$output"
 
@@ -87,13 +134,16 @@ dc_base_create() {
   mkdir -p "$(dirname -- "$output")"
   temporary_root=$(mktemp -d)
 
+  [[ -n "$arch" ]] && debootstrap_options+=("--arch=$arch")
+  [[ -n "$include" ]] && debootstrap_options+=("--include=$include")
+  [[ -n "$exclude" ]] && debootstrap_options+=("--exclude=$exclude")
+
   (
     trap 'rm -rf -- "$temporary_root"' EXIT
     debootstrap \
-      --variant=minbase \
-      --include="$DC_INCLUDE" \
+      "${debootstrap_options[@]}" \
       --make-tarball="$output" \
-      "$DC_SUITE" "$temporary_root" "$DC_MIRROR"
+      "$suite" "$temporary_root" "$mirror"
   )
 
   echo "基础 tarball 已创建：$output"
