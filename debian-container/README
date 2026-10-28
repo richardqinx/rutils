@@ -1,0 +1,24 @@
+Debian 容器
+
+这个工具使用 Linux 的 mount namespace、PID namespace 和 network namespace，创建
+一个最小 Debian 实验环境。
+
+用法：
+
+sudo ./debian-container.sh init
+sudo ./debian-container.sh enter
+sudo ./debian-container.sh delete
+
+默认情况下，镜像和挂载目录位于当前目录：
+
+rootfs.ext4
+debian-root/
+
+可以通过环境变量修改路径：
+
+sudo env \
+  RUTILS_DEBIAN_IMAGE=/path/to/rootfs.ext4 \
+  RUTILS_DEBIAN_ROOT=/path/to/debian-root \
+  ./debian-container.sh enter
+
+脚本实现按职责拆分在 lib/ 目录中，入口脚本只负责加载模块和分发命令。
