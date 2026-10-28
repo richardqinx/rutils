@@ -51,6 +51,8 @@ dc_usage() {
 命令：
   base-create [选项]  下载一次并创建 debootstrap 软件包 tarball
   base-info TAR      查看基础 tarball 的 manifest
+  network-status     查看 NAT 网络资源
+  network-clean      清理 NAT 残留资源
   init NAME [选项]    创建指定名称的容器镜像
   enter NAME [选项]   进入指定容器
   exec NAME [选项]    在指定容器中执行命令

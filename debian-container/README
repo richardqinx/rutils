@@ -55,6 +55,11 @@ sudo ./debian-container.sh enter test-1 --mount /home/richard/data:/data:ro
 sudo ./debian-container.sh exec test-1 -- uname -a
 sudo ./debian-container.sh exec test-1 --network host -- apt-get update
 sudo ./debian-container.sh exec test-1 --network nat -- apt-get update
+
+查看和清理 NAT 网络资源：
+
+sudo ./debian-container.sh network-status
+sudo ./debian-container.sh network-clean
 sudo ./debian-container.sh exec test-1 --mount /home/richard/project:/workspace:rw -- make -C /workspace
 
 列出和查看容器：

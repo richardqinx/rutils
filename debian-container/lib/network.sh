@@ -100,3 +100,76 @@ dc_network_nat_run() {
     unshare --mount --uts --ipc --pid --fork --propagation private -- \
     bash "$DC_SCRIPT" "$child_action" "$DC_INSTANCE" "$@"
 }
+
+dc_network_nat_namespaces() {
+  ip netns list | awk '$1 ~ /^rutils-/ { print $1 }'
+}
+
+dc_network_status() {
+  local namespace
+  local link
+
+  dc_require_commands awk ip nft
+  echo "网桥：$DC_NAT_BRIDGE"
+  if ip link show "$DC_NAT_BRIDGE" >/dev/null 2>&1; then
+    ip -brief addr show dev "$DC_NAT_BRIDGE"
+  else
+    echo '状态：不存在'
+  fi
+
+  echo 'network namespace：'
+  while read -r namespace; do
+    [[ -n "$namespace" ]] || continue
+    echo "  $namespace"
+    ip netns pids "$namespace" | awk '{ print "    pid: " $0 }'
+  done < <(dc_network_nat_namespaces)
+
+  echo 'veth：'
+  while read -r link; do
+    [[ -n "$link" ]] || continue
+    echo "  $link"
+  done < <(ip -o link show | awk -F': ' '$2 ~ /^rvh[0-9]+@/ { sub(/@.*/, "", $2); print $2 }')
+
+  echo 'nftables：'
+  if nft list table ip rutils_nat >/dev/null 2>&1; then
+    nft list table ip rutils_nat
+  else
+    echo '  rutils_nat 不存在'
+  fi
+}
+
+dc_network_clean() {
+  local namespace
+  local link
+  local active=0
+
+  dc_require_commands awk ip nft
+  while read -r namespace; do
+    [[ -n "$namespace" ]] || continue
+    if [[ -n "$(ip netns pids "$namespace")" ]]; then
+      echo "保留活动 namespace：$namespace"
+      active=1
+    else
+      ip netns delete "$namespace"
+      echo "已删除 namespace：$namespace"
+    fi
+  done < <(dc_network_nat_namespaces)
+
+  if ((active == 0)); then
+    while read -r link; do
+      [[ -n "$link" ]] || continue
+      ip link delete "$link" 2>/dev/null || true
+      echo "已删除 veth：$link"
+    done < <(ip -o link show | awk -F': ' '$2 ~ /^rvh[0-9]+@/ { sub(/@.*/, "", $2); print $2 }')
+
+    nft delete table ip rutils_nat 2>/dev/null || true
+    if ip link show "$DC_NAT_BRIDGE" >/dev/null 2>&1; then
+      ip link set "$DC_NAT_BRIDGE" down
+      ip link delete "$DC_NAT_BRIDGE" type bridge
+    fi
+    echo '已清理 NAT 网桥和 nftables 规则。'
+  else
+    echo '存在活动 namespace，保留 veth。'
+    echo '存在活动 namespace，保留 NAT 网桥和 nftables 规则。'
+  fi
+}

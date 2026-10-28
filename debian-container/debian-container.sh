@@ -31,7 +31,7 @@ esac
 dc_require_root
 
 case "$DC_ACTION" in
-  base-create|init|enter|exec|resize|delete)
+  base-create|init|enter|exec|resize|delete|network-clean)
     # 防止多个会话同时读写同一 ext4 镜像。
     dc_acquire_lock
     ;;
@@ -53,6 +53,8 @@ esac
 case "$DC_ACTION" in
   base-create) dc_base_create "$@" ;;
   base-info)   dc_manifest_info "$@" ;;
+  network-status) dc_network_status ;;
+  network-clean)  dc_network_clean ;;
   init)    dc_init "$@" ;;
   _init)   dc_init_rootfs "$@" ;;
   enter)   dc_enter "$@" ;;
