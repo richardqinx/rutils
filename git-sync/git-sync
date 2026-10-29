@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2026 by Richard Qin
+
+set -Eeuo pipefail
+
+GS_SCRIPT=$(readlink -f -- "${BASH_SOURCE[0]}")
+GS_DIR=$(dirname -- "$GS_SCRIPT")
+
+TEXTDOMAIN=git-sync
+TEXTDOMAINDIR="$GS_DIR/locale"
+export TEXTDOMAIN TEXTDOMAINDIR
+
+gs_gettext() {
+  gettext "$1"
+}
+
+gs_die() {
+  printf '%s\n' "$(gs_gettext "$1")" >&2
+  exit 1
+}
+
+gs_usage() {
+  printf "$(gettext 'Usage: %s <command> [remote ...]\n\nCommands:\n  push [REMOTE ...]  Push the current branch to the specified remotes; push to all remotes when omitted\n  status [REMOTE ...] Show the sync status of the specified remotes\n  help               Show this help\n\nExamples:\n  %s push\n  %s push github gitlab\n  %s status\n')" \
+    "$GS_SCRIPT" "$GS_SCRIPT" "$GS_SCRIPT" "$GS_SCRIPT"
+}
+
+gs_require_git_repository() {
+  git rev-parse --show-toplevel >/dev/null 2>&1 || gs_die 'The current directory is not a Git repository.'
+}
+
+gs_get_remotes() {
+  local remote
+
+  if (($# > 0)); then
+    GS_REMOTES=("$@")
+    return 0
+  fi
+
+  mapfile -t GS_REMOTES < <(git remote)
+  ((${#GS_REMOTES[@]} > 0)) || gs_die 'The current Git repository has no remotes.'
+}
+
+gs_push() {
+  local remote
+  local failed=0
+
+  gs_get_remotes "$@"
+
+  for remote in "${GS_REMOTES[@]}"; do
+    printf "$(gettext 'Pushing to %s...\n')" "$remote"
+    if git push "$remote" HEAD; then
+      printf "$(gettext '%s: success\n')" "$remote"
+    else
+      printf "$(gettext '%s: failed\n')" "$remote" >&2
+      failed=1
+    fi
+  done
+
+  return "$failed"
+}
+
+gs_status() {
+  local remote
+
+  gs_get_remotes "$@"
+
+  for remote in "${GS_REMOTES[@]}"; do
+    printf '\n[%s]\n' "$remote"
+    git fetch --dry-run "$remote"
+    git status --short --branch
+  done
+}
+
+GS_ACTION=${1:-help}
+if (($# > 0)); then
+  shift
+fi
+
+case "$GS_ACTION" in
+  push)
+    gs_require_git_repository
+    gs_push "$@"
+    ;;
+  status)
+    gs_require_git_repository
+    gs_status "$@"
+    ;;
+  help|-h|--help)
+    if (($# > 0)); then
+      printf "$(gettext 'help does not accept arguments: %s\n')" "$*" >&2
+      exit 1
+    fi
+    gs_usage
+    ;;
+  *)
+    gs_usage >&2
+    exit 2
+    ;;
+esac

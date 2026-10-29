@@ -1,0 +1,51 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the git-sync package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: git-sync\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-30 04:05+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: git-sync:24
+msgid ""
+"Usage: %s <command> [remote ...]\\n\\nCommands:\\n  push [REMOTE ...]  Push "
+"the current branch to the specified remotes; push to all remotes when "
+"omitted\\n  status [REMOTE ...] Show the sync status of the specified "
+"remotes\\n  help               Show this help\\n\\nExamples:\\n  %s push\\n  "
+"%s push github gitlab\\n  %s status\\n"
+msgstr ""
+
+#: git-sync:29
+msgid "The current directory is not a Git repository."
+msgstr ""
+
+#: git-sync:41
+msgid "The current Git repository has no remotes."
+msgstr ""
+
+#: git-sync:51
+msgid "Pushing to %s...\\n"
+msgstr ""
+
+#: git-sync:53
+msgid "%s: success\\n"
+msgstr ""
+
+#: git-sync:55
+msgid "%s: failed\\n"
+msgstr ""
+
+#: git-sync:91
+msgid "help does not accept arguments: %s\\n"
+msgstr ""

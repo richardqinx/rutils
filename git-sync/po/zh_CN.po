@@ -1,0 +1,53 @@
+# Chinese translations for git-sync package.
+# Copyright (C) 2026 THE git-sync'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the git-sync package.
+# Automatically generated, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: git-sync\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-30 04:05+0800\n"
+"PO-Revision-Date: 2026-10-30 04:05+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: git-sync:24
+msgid ""
+"Usage: %s <command> [remote ...]\\n\\nCommands:\\n  push [REMOTE ...]  Push "
+"the current branch to the specified remotes; push to all remotes when "
+"omitted\\n  status [REMOTE ...] Show the sync status of the specified "
+"remotes\\n  help               Show this help\\n\\nExamples:\\n  %s push\\n  "
+"%s push github gitlab\\n  %s status\\n"
+msgstr ""
+"用法：%s <命令> [远程仓库 ...]\\n\\n命令：\\n  push [REMOTE ...]  将当前分支推送到指定 remote；未指定时推送全部 "
+"remote\\n  status [REMOTE ...] 查看指定 remote 的同步状态\\n  help               显示帮助"
+"\\n\\n示例：\\n  %s push\\n  %s push github gitlab\\n  %s status\\n"
+
+#: git-sync:29
+msgid "The current directory is not a Git repository."
+msgstr "当前目录不是 Git 仓库。"
+
+#: git-sync:41
+msgid "The current Git repository has no remotes."
+msgstr "当前 Git 仓库没有配置 remote。"
+
+#: git-sync:51
+msgid "Pushing to %s...\\n"
+msgstr "正在推送到 %s...\\n"
+
+#: git-sync:53
+msgid "%s: success\\n"
+msgstr "%s：成功\\n"
+
+#: git-sync:55
+msgid "%s: failed\\n"
+msgstr "%s：失败\\n"
+
+#: git-sync:91
+msgid "help does not accept arguments: %s\\n"
+msgstr "help 不接受参数：%s\\n"

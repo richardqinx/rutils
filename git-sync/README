@@ -1,0 +1,29 @@
+git-sync
+
+git-sync 是一个使用 Bash 编写的 Git 多远程同步工具。
+它直接读取当前仓库已有的 Git remote 配置。
+
+使用：
+
+给脚本添加执行权限：
+
+chmod +x git-sync
+
+推送当前分支到所有 remote：
+
+./git-sync push
+
+推送到指定 remote：
+
+./git-sync push github gitlab
+
+查看 remote 的同步状态：
+
+./git-sync status
+
+remote 使用 Git 原有配置管理：
+
+git remote add github git@github.com:user/project.git
+git remote add gitlab git@gitlab.com:user/project.git
+
+一个 remote 推送失败时，脚本会继续处理其他 remote，并在最后以失败状态退出。
