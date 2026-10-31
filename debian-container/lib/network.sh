@@ -25,7 +25,7 @@ dc_network_prepare() {
       DC_NETWORK_UNSHARE_ARGS=(--net)
       ;;
     *)
-      dc_die "网络模式无效：$mode（可选：none、host、nat）"
+      dc_die 'Invalid network mode: %s (choose none, host, or nat)' "$mode"
       ;;
   esac
 }
@@ -110,31 +110,31 @@ dc_network_status() {
   local link
 
   dc_require_commands awk ip nft
-  echo "网桥：$DC_NAT_BRIDGE"
+  dc_print 'Bridge: %s' "$DC_NAT_BRIDGE"
   if ip link show "$DC_NAT_BRIDGE" >/dev/null 2>&1; then
     ip -brief addr show dev "$DC_NAT_BRIDGE"
   else
-    echo '状态：不存在'
+    dc_print 'Status: does not exist'
   fi
 
-  echo 'network namespace：'
+  dc_print 'Network namespaces:'
   while read -r namespace; do
     [[ -n "$namespace" ]] || continue
-    echo "  $namespace"
+    dc_print '  %s' "$namespace"
     ip netns pids "$namespace" | awk '{ print "    pid: " $0 }'
   done < <(dc_network_nat_namespaces)
 
-  echo 'veth：'
+  dc_print 'Veth interfaces:'
   while read -r link; do
     [[ -n "$link" ]] || continue
-    echo "  $link"
+    dc_print '  %s' "$link"
   done < <(ip -o link show | awk -F': ' '$2 ~ /^rvh[0-9]+@/ { sub(/@.*/, "", $2); print $2 }')
 
-  echo 'nftables：'
+  dc_print 'nftables:'
   if nft list table ip rutils_nat >/dev/null 2>&1; then
     nft list table ip rutils_nat
   else
-    echo '  rutils_nat 不存在'
+    dc_print '  rutils_nat does not exist'
   fi
 }
 
@@ -147,11 +147,11 @@ dc_network_clean() {
   while read -r namespace; do
     [[ -n "$namespace" ]] || continue
     if [[ -n "$(ip netns pids "$namespace")" ]]; then
-      echo "保留活动 namespace：$namespace"
+      dc_print 'Keeping active namespace: %s' "$namespace"
       active=1
     else
       ip netns delete "$namespace"
-      echo "已删除 namespace：$namespace"
+      dc_print 'Deleted namespace: %s' "$namespace"
     fi
   done < <(dc_network_nat_namespaces)
 
@@ -159,7 +159,7 @@ dc_network_clean() {
     while read -r link; do
       [[ -n "$link" ]] || continue
       ip link delete "$link" 2>/dev/null || true
-      echo "已删除 veth：$link"
+      dc_print 'Deleted veth: %s' "$link"
     done < <(ip -o link show | awk -F': ' '$2 ~ /^rvh[0-9]+@/ { sub(/@.*/, "", $2); print $2 }')
 
     nft delete table ip rutils_nat 2>/dev/null || true
@@ -167,9 +167,9 @@ dc_network_clean() {
       ip link set "$DC_NAT_BRIDGE" down
       ip link delete "$DC_NAT_BRIDGE" type bridge
     fi
-    echo '已清理 NAT 网桥和 nftables 规则。'
+    dc_print 'NAT bridge and nftables rules cleaned.'
   else
-    echo '存在活动 namespace，保留 veth。'
-    echo '存在活动 namespace，保留 NAT 网桥和 nftables 规则。'
+    dc_print 'Active namespaces exist; keeping veth interfaces.'
+    dc_print 'Active namespaces exist; keeping NAT bridge and nftables rules.'
   fi
 }

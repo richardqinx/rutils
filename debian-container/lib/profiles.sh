@@ -13,7 +13,7 @@ dc_profile_parse() {
 
   while IFS= read -r line || [[ -n "$line" ]]; do
     [[ -z "$line" || "$line" == \#* ]] && continue
-    [[ "$line" == *=* ]] || dc_die "profile 配置格式无效：$line"
+    [[ "$line" == *=* ]] || dc_die 'Invalid profile configuration: %s' "$line"
     key=${line%%=*}
     value=${line#*=}
     case "$key" in
@@ -24,7 +24,7 @@ dc_profile_parse() {
         dc_bind_add "$value"
         ;;
       *)
-        dc_die "profile 配置项无效：$key"
+        dc_die 'Invalid profile option: %s' "$key"
         ;;
     esac
   done < "$file"

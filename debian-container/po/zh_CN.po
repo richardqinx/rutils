@@ -1,0 +1,363 @@
+# Chinese translations for debian-container package.
+# Copyright (C) 2026 THE debian-container'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the debian-container package.
+# Automatically generated, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: debian-container\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-30 04:22+0800\n"
+"PO-Revision-Date: 2026-10-30 04:22+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: debian-container.sh:42 debian-container.sh:47
+msgid "%s requires an instance name."
+msgstr "%s 需要一个实例名称。"
+
+#: lib/binds.sh:18
+msgid "Invalid mount specification: %s"
+msgstr "挂载参数格式无效：%s"
+
+#: lib/binds.sh:19
+msgid "Mount source and target must be absolute paths: %s"
+msgstr "挂载源和目标必须使用绝对路径：%s"
+
+#: lib/binds.sh:20 lib/binds.sh:27
+msgid "A directory cannot be mounted at the container root."
+msgstr "不能把目录挂载到容器根目录。"
+
+#: lib/binds.sh:23
+msgid "Invalid mount mode: %s"
+msgstr "挂载模式无效：%s"
+
+#: lib/binds.sh:25
+msgid "Mount source is not a directory: %s"
+msgstr "挂载源不是目录：%s"
+
+#: lib/binds.sh:37
+msgid "Invalid mount option."
+msgstr "挂载参数无效。"
+
+#: lib/binds.sh:38 lib/container.sh:230 lib/container.sh:290
+#: lib/container.sh:331
+msgid "--mount requires a mount specification."
+msgstr "--mount 需要一个挂载参数。"
+
+#: lib/common.sh:39
+msgid "Please run this script with sudo."
+msgstr "请使用 sudo 执行此脚本。"
+
+#: lib/common.sh:45
+msgid "Required command is missing: %s"
+msgstr "缺少工具：%s"
+
+#: lib/common.sh:52
+msgid "The Debian container is already running or being initialized."
+msgstr "Debian 容器已经在运行或正在初始化。"
+
+#: lib/common.sh:58
+msgid "Invalid instance name: %s"
+msgstr "实例名称无效：%s"
+
+#: lib/common.sh:76
+msgid ""
+"Usage: sudo bash %s <command>\\n\\nCommands:\\n  base-create [OPTIONS]  "
+"Download once and create a debootstrap package tarball\\n  base-info "
+"TAR           Show the manifest of a base tarball\\n  network-"
+"status          Show NAT network resources\\n  network-clean           Clean "
+"NAT network resources\\n  init NAME [OPTIONS]     Create a container "
+"image\\n  enter NAME [OPTIONS]    Enter a container\\n  exec NAME "
+"[OPTIONS]     Execute a command in a container\\n  resize NAME [OPTIONS]   "
+"Resize a container image\\n  status NAME             Show container "
+"status\\n  list                    List all containers\\n  delete "
+"NAME             Delete a container\\n\\ninit options:\\n  --tarball "
+"PATH          Initialize from a local tarball\\n  --size SIZE             "
+"Image size (default: 3G)\\n  --profile PATH          Copy an instance "
+"profile\\n\\nresize options:\\n  --size SIZE             New image size; it "
+"can only be increased\\n\\nbase-create options:\\n  --output PATH           "
+"Output tarball path\\n  --manifest PATH         Manifest path (default: "
+"TARBALL.manifest)\\n  --suite SUITE           Debian release\\n  --arch "
+"ARCH             Target architecture\\n  --mirror URL            Debian "
+"mirror URL\\n  --include PACKAGES      Packages to include, comma-"
+"separated\\n  --exclude PACKAGES      Packages to exclude, comma-"
+"separated\\n\\nnetwork options:\\n  --network MODE          Network mode: "
+"none (default), host, or nat\\n\\nmount options:\\n  --mount SPEC            "
+"Mount specification: HOST:CONTAINER[:ro|rw]\\n\\nprofile options:\\n  "
+"network=MODE\\n  mount=HOST:CONTAINER[:ro|rw]\\n\\nenvironment variables:"
+"\\n  DEBIAN_INSTANCES  Instance directory (default: current directory/"
+"instances)\\n  DEBIAN_SIZE       Image size (default: 3G)\\n  "
+"DEBIAN_LOCK_FILE  Lock file (default: /run/lock/debian-container.lock)\\n  "
+"DEBIAN_TARBALL    Base tarball (default: current directory/debian-"
+"base.tar.gz)\\n  DEBIAN_SUITE      Debian release (default: stable)\\n  "
+"DEBIAN_ARCH       Target architecture\\n  DEBIAN_MIRROR     Debian mirror "
+"URL\\n  DEBIAN_INCLUDE    Additional packages, comma-separated\\n  "
+"DEBIAN_EXCLUDE    Packages to exclude, comma-separated\\n  DEBIAN_NETWORK    "
+"Default network mode (default: none)\\n  DEBIAN_NAT_BRIDGE NAT bridge name "
+"(default: rutils0)\\n  DEBIAN_NAT_NETWORK NAT subnet (default: "
+"10.88.0.0/24)\\n  DEBIAN_NAT_GATEWAY NAT gateway address (default: "
+"10.88.0.1)\\n  DEBIAN_NAT_ADDRESS Container address (default: 10.88.0.2)\\n  "
+"DEBIAN_NAT_DNS     NAT mode DNS server (default: 1.1.1.1)\\n"
+msgstr ""
+"用法：sudo bash %s <命令>\\n\\n命令：\\n  base-create [选项]  下载一次并创建 debootstrap 软件包 tarball\\n  base-info TAR           查看基础 tarball 的 manifest\\n  network-status          查看 NAT 网络资源\\n  network-clean           清理 NAT 网络资源\\n  init NAME [选项]        创建指定名称的容器镜像\\n  enter NAME [选项]       进入指定容器\\n  exec NAME [选项]        在指定容器中执行命令\\n  resize NAME [选项]      扩大指定容器的镜像\\n  status NAME             查看容器状态\\n  list                    列出所有容器\\n  delete NAME             删除容器\\n\\ninit 选项：\\n  --tarball PATH          从本地 tarball 初始化\\n  --size SIZE             镜像大小（默认：3G）\\n  --profile PATH          复制实例 profile\\n\\nresize 选项：\\n  --size SIZE             新的镜像大小，只能扩大\\n\\nbase-create 选项：\\n  --output PATH           输出 tarball 路径\\n  --manifest PATH         manifest 路径（默认：TARBALL.manifest）\\n  --suite SUITE           Debian 版本\\n  --arch ARCH             目标架构\\n  --mirror URL            Debian 镜像地址\\n  --include PACKAGES      要加入的软件包，使用逗号分隔\\n  --exclude PACKAGES      要排除的软件包，使用逗号分隔\\n\\n网络选项：\\n  --network MODE          网络模式：none（默认）、host 或 nat\\n\\n挂载选项：\\n  --mount SPEC            目录挂载：HOST:CONTAINER[:ro|rw]\\n\\nprofile 配置项：\\n  network=MODE\\n  mount=HOST:CONTAINER[:ro|rw]\\n\\n环境变量：\\n  DEBIAN_INSTANCES  实例目录（默认：当前目录/instances）\\n  DEBIAN_SIZE       镜像大小（默认：3G）\\n  DEBIAN_LOCK_FILE  锁文件路径（默认：/run/lock/debian-container.lock）\\n  DEBIAN_TARBALL    基础 tarball（默认：当前目录/debian-base.tar.gz）\\n  DEBIAN_SUITE      Debian 版本（默认：stable）\\n  DEBIAN_ARCH       目标架构\\n  DEBIAN_MIRROR     Debian 镜像地址\\n  DEBIAN_INCLUDE    额外软件包，使用逗号分隔\\n  DEBIAN_EXCLUDE    要排除的软件包，使用逗号分隔\\n  DEBIAN_NETWORK    默认网络模式（默认：none）\\n  DEBIAN_NAT_BRIDGE NAT 网桥名称（默认：rutils0）\\n  DEBIAN_NAT_NETWORK NAT 子网（默认：10.88.0.0/24）\\n  DEBIAN_NAT_GATEWAY NAT 网关地址（默认：10.88.0.1）\\n  DEBIAN_NAT_ADDRESS 容器地址（默认：10.88.0.2）\\n  DEBIAN_NAT_DNS     NAT 模式 DNS（默认：1.1.1.1）\\n"
+
+#: lib/container.sh:13
+msgid "--tarball requires a file path."
+msgstr "--tarball 需要一个文件路径。"
+
+#: lib/container.sh:18 lib/container.sh:73
+msgid "--size requires a size."
+msgstr "--size 需要一个大小。"
+
+#: lib/container.sh:23
+msgid "--profile requires a file path."
+msgstr "--profile 需要一个文件路径。"
+
+#: lib/container.sh:32
+msgid "Unknown init option: %s"
+msgstr "未知的 init 选项：%s"
+
+#: lib/container.sh:41
+msgid "Tarball not found: %s"
+msgstr "找不到 tarball：%s"
+
+#: lib/container.sh:45
+msgid "Profile not found: %s"
+msgstr "找不到 profile：%s"
+
+#: lib/container.sh:49
+msgid ""
+"Instance already exists: %s. Use enter to access it instead of overwriting "
+"its data."
+msgstr "实例已存在：%s。请使用 enter 进入，避免覆盖容器数据。"
+
+#: lib/container.sh:64
+msgid ""
+"Initialization complete. Run sudo bash %s enter %s to enter the container."
+msgstr "初始化完成。执行 sudo bash %s enter %s 进入容器。"
+
+#: lib/container.sh:82
+msgid "Unknown resize option: %s"
+msgstr "未知的 resize 选项：%s"
+
+#: lib/container.sh:87
+msgid "resize requires --size."
+msgstr "resize 必须指定 --size。"
+
+#: lib/container.sh:88 lib/container.sh:244 lib/container.sh:309
+msgid "Image not found; run init first."
+msgstr "没有找到镜像，请先运行 init。"
+
+#: lib/container.sh:90
+msgid "Instance resized: %s, new size: %s"
+msgstr "实例已扩容：%s，新的大小为 %s"
+
+#: lib/container.sh:138
+msgid "--output requires a file path."
+msgstr "--output 需要一个文件路径。"
+
+#: lib/container.sh:143
+msgid "--manifest requires a file path."
+msgstr "--manifest 需要一个文件路径。"
+
+#: lib/container.sh:148
+msgid "--suite requires a release name."
+msgstr "--suite 需要一个版本名称。"
+
+#: lib/container.sh:153
+msgid "--arch requires an architecture name."
+msgstr "--arch 需要一个架构名称。"
+
+#: lib/container.sh:158
+msgid "--mirror requires a mirror URL."
+msgstr "--mirror 需要一个镜像地址。"
+
+#: lib/container.sh:163
+msgid "--include requires a package list."
+msgstr "--include 需要软件包列表。"
+
+#: lib/container.sh:168
+msgid "--exclude requires a package list."
+msgstr "--exclude 需要软件包列表。"
+
+#: lib/container.sh:177
+msgid "Unknown base-create option: %s"
+msgstr "未知的 base-create 选项：%s"
+
+#: lib/container.sh:188
+msgid "Manifest cannot overwrite the tarball."
+msgstr "manifest 不能覆盖 tarball。"
+
+#: lib/container.sh:189
+msgid "Tarball already exists: %s"
+msgstr "tarball 已存在：%s"
+
+#: lib/container.sh:190
+msgid "Manifest already exists: %s"
+msgstr "manifest 已存在：%s"
+
+#: lib/container.sh:210
+msgid "Base tarball created: %s"
+msgstr "基础 tarball 已创建：%s"
+
+#: lib/container.sh:211
+msgid "Manifest created: %s"
+msgstr "manifest 已创建：%s"
+
+#: lib/container.sh:225 lib/container.sh:285
+msgid "--network requires a mode."
+msgstr "--network 需要一个模式。"
+
+#: lib/container.sh:239
+msgid "Unknown enter option: %s"
+msgstr "未知的 enter 选项：%s"
+
+#: lib/container.sh:267
+msgid ""
+"Entered the isolated Debian environment; type exit to leave the container."
+msgstr "已进入独立的 Debian 实验环境；输入 exit 可退出容器。"
+
+#: lib/container.sh:303
+msgid "Usage: exec NAME [--network MODE] -- command [arguments...]"
+msgstr "用法：exec NAME [--network MODE] -- 命令 [参数...]"
+
+#: lib/container.sh:308 lib/container.sh:346
+msgid "exec requires a command."
+msgstr "exec 需要一个命令。"
+
+#: lib/container.sh:341
+msgid "Invalid exec child-process arguments."
+msgstr "exec 子进程参数格式无效。"
+
+#: lib/container.sh:362
+msgid "Instance: %s"
+msgstr "实例：%s"
+
+#: lib/container.sh:363
+msgid "Directory: %s"
+msgstr "目录：%s"
+
+#: lib/container.sh:364
+msgid "Network: %s"
+msgstr "网络：%s"
+
+#: lib/container.sh:366
+msgid "Mount: %s"
+msgstr "挂载：%s"
+
+#: lib/container.sh:369
+msgid "Image: exists"
+msgstr "镜像：存在"
+
+#: lib/container.sh:378 lib/storage.sh:22
+msgid "The instance is still mounted: %s"
+msgstr "实例仍处于挂载状态：%s"
+
+#: lib/container.sh:381
+msgid "Debian instance deleted: %s"
+msgstr "Debian 实例已删除：%s"
+
+#: lib/manifest.sh:36
+msgid "Usage: base-info TARBALL"
+msgstr "用法：base-info TARBALL"
+
+#: lib/manifest.sh:46
+msgid "Manifest not found: %s"
+msgstr "找不到 manifest：%s"
+
+#: lib/manifest.sh:53
+msgid "checksum=match"
+msgstr "checksum=match"
+
+#: lib/manifest.sh:55
+msgid "checksum=mismatch"
+msgstr "checksum=mismatch"
+
+#: lib/network.sh:28
+msgid "Invalid network mode: %s (choose none, host, or nat)"
+msgstr "网络模式无效：%s（可选：none、host、nat）"
+
+#: lib/network.sh:113
+msgid "Bridge: %s"
+msgstr "网桥：%s"
+
+#: lib/network.sh:117
+msgid "Status: does not exist"
+msgstr "状态：不存在"
+
+#: lib/network.sh:120
+msgid "Network namespaces:"
+msgstr "network namespace："
+
+#: lib/network.sh:123 lib/network.sh:130
+msgid "  %s"
+msgstr "  %s"
+
+#: lib/network.sh:127
+msgid "Veth interfaces:"
+msgstr "veth："
+
+#: lib/network.sh:133
+msgid "nftables:"
+msgstr "nftables："
+
+#: lib/network.sh:137
+msgid "  rutils_nat does not exist"
+msgstr "  rutils_nat 不存在"
+
+#: lib/network.sh:150
+msgid "Keeping active namespace: %s"
+msgstr "保留活动 namespace：%s"
+
+#: lib/network.sh:154
+msgid "Deleted namespace: %s"
+msgstr "已删除 namespace：%s"
+
+#: lib/network.sh:162
+msgid "Deleted veth: %s"
+msgstr "已删除 veth：%s"
+
+#: lib/network.sh:170
+msgid "NAT bridge and nftables rules cleaned."
+msgstr "已清理 NAT 网桥和 nftables 规则。"
+
+#: lib/network.sh:172
+msgid "Active namespaces exist; keeping veth interfaces."
+msgstr "存在活动 namespace，保留 veth。"
+
+#: lib/network.sh:173
+msgid "Active namespaces exist; keeping NAT bridge and nftables rules."
+msgstr "存在活动 namespace，保留 NAT 网桥和 nftables 规则。"
+
+#: lib/profiles.sh:16
+msgid "Invalid profile configuration: %s"
+msgstr "profile 配置格式无效：%s"
+
+#: lib/profiles.sh:27
+msgid "Invalid profile option: %s"
+msgstr "profile 配置项无效：%s"
+
+#: lib/storage.sh:27
+msgid "The new image size must be greater than the current size: %s bytes"
+msgstr "扩容大小必须大于当前镜像大小：%s bytes"
+
+#: lib/storage.sh:33
+msgid "Filesystem check failed: %s"
+msgstr "文件系统检查失败：%s"
+
+#: lib/storage.sh:45
+msgid "Logical size: %s bytes"
+msgstr "逻辑大小：%s bytes"
+
+#: lib/storage.sh:46
+msgid "Actual usage: %s bytes"
+msgstr "实际占用：%s bytes"
+
+#: lib/storage.sh:48
+msgid "Image: does not exist"
+msgstr "镜像：不存在"

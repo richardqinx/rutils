@@ -1,0 +1,363 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the debian-container package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: debian-container\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-30 04:22+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: debian-container.sh:42 debian-container.sh:47
+msgid "%s requires an instance name."
+msgstr ""
+
+#: lib/binds.sh:18
+msgid "Invalid mount specification: %s"
+msgstr ""
+
+#: lib/binds.sh:19
+msgid "Mount source and target must be absolute paths: %s"
+msgstr ""
+
+#: lib/binds.sh:20 lib/binds.sh:27
+msgid "A directory cannot be mounted at the container root."
+msgstr ""
+
+#: lib/binds.sh:23
+msgid "Invalid mount mode: %s"
+msgstr ""
+
+#: lib/binds.sh:25
+msgid "Mount source is not a directory: %s"
+msgstr ""
+
+#: lib/binds.sh:37
+msgid "Invalid mount option."
+msgstr ""
+
+#: lib/binds.sh:38 lib/container.sh:230 lib/container.sh:290
+#: lib/container.sh:331
+msgid "--mount requires a mount specification."
+msgstr ""
+
+#: lib/common.sh:39
+msgid "Please run this script with sudo."
+msgstr ""
+
+#: lib/common.sh:45
+msgid "Required command is missing: %s"
+msgstr ""
+
+#: lib/common.sh:52
+msgid "The Debian container is already running or being initialized."
+msgstr ""
+
+#: lib/common.sh:58
+msgid "Invalid instance name: %s"
+msgstr ""
+
+#: lib/common.sh:76
+msgid ""
+"Usage: sudo bash %s <command>\\n\\nCommands:\\n  base-create [OPTIONS]  "
+"Download once and create a debootstrap package tarball\\n  base-info "
+"TAR           Show the manifest of a base tarball\\n  network-"
+"status          Show NAT network resources\\n  network-clean           Clean "
+"NAT network resources\\n  init NAME [OPTIONS]     Create a container "
+"image\\n  enter NAME [OPTIONS]    Enter a container\\n  exec NAME "
+"[OPTIONS]     Execute a command in a container\\n  resize NAME [OPTIONS]   "
+"Resize a container image\\n  status NAME             Show container "
+"status\\n  list                    List all containers\\n  delete "
+"NAME             Delete a container\\n\\ninit options:\\n  --tarball "
+"PATH          Initialize from a local tarball\\n  --size SIZE             "
+"Image size (default: 3G)\\n  --profile PATH          Copy an instance "
+"profile\\n\\nresize options:\\n  --size SIZE             New image size; it "
+"can only be increased\\n\\nbase-create options:\\n  --output PATH           "
+"Output tarball path\\n  --manifest PATH         Manifest path (default: "
+"TARBALL.manifest)\\n  --suite SUITE           Debian release\\n  --arch "
+"ARCH             Target architecture\\n  --mirror URL            Debian "
+"mirror URL\\n  --include PACKAGES      Packages to include, comma-"
+"separated\\n  --exclude PACKAGES      Packages to exclude, comma-"
+"separated\\n\\nnetwork options:\\n  --network MODE          Network mode: "
+"none (default), host, or nat\\n\\nmount options:\\n  --mount SPEC            "
+"Mount specification: HOST:CONTAINER[:ro|rw]\\n\\nprofile options:\\n  "
+"network=MODE\\n  mount=HOST:CONTAINER[:ro|rw]\\n\\nenvironment variables:"
+"\\n  DEBIAN_INSTANCES  Instance directory (default: current directory/"
+"instances)\\n  DEBIAN_SIZE       Image size (default: 3G)\\n  "
+"DEBIAN_LOCK_FILE  Lock file (default: /run/lock/debian-container.lock)\\n  "
+"DEBIAN_TARBALL    Base tarball (default: current directory/debian-"
+"base.tar.gz)\\n  DEBIAN_SUITE      Debian release (default: stable)\\n  "
+"DEBIAN_ARCH       Target architecture\\n  DEBIAN_MIRROR     Debian mirror "
+"URL\\n  DEBIAN_INCLUDE    Additional packages, comma-separated\\n  "
+"DEBIAN_EXCLUDE    Packages to exclude, comma-separated\\n  DEBIAN_NETWORK    "
+"Default network mode (default: none)\\n  DEBIAN_NAT_BRIDGE NAT bridge name "
+"(default: rutils0)\\n  DEBIAN_NAT_NETWORK NAT subnet (default: "
+"10.88.0.0/24)\\n  DEBIAN_NAT_GATEWAY NAT gateway address (default: "
+"10.88.0.1)\\n  DEBIAN_NAT_ADDRESS Container address (default: 10.88.0.2)\\n  "
+"DEBIAN_NAT_DNS     NAT mode DNS server (default: 1.1.1.1)\\n"
+msgstr ""
+
+#: lib/container.sh:13
+msgid "--tarball requires a file path."
+msgstr ""
+
+#: lib/container.sh:18 lib/container.sh:73
+msgid "--size requires a size."
+msgstr ""
+
+#: lib/container.sh:23
+msgid "--profile requires a file path."
+msgstr ""
+
+#: lib/container.sh:32
+msgid "Unknown init option: %s"
+msgstr ""
+
+#: lib/container.sh:41
+msgid "Tarball not found: %s"
+msgstr ""
+
+#: lib/container.sh:45
+msgid "Profile not found: %s"
+msgstr ""
+
+#: lib/container.sh:49
+msgid ""
+"Instance already exists: %s. Use enter to access it instead of overwriting "
+"its data."
+msgstr ""
+
+#: lib/container.sh:64
+msgid ""
+"Initialization complete. Run sudo bash %s enter %s to enter the container."
+msgstr ""
+
+#: lib/container.sh:82
+msgid "Unknown resize option: %s"
+msgstr ""
+
+#: lib/container.sh:87
+msgid "resize requires --size."
+msgstr ""
+
+#: lib/container.sh:88 lib/container.sh:244 lib/container.sh:309
+msgid "Image not found; run init first."
+msgstr ""
+
+#: lib/container.sh:90
+msgid "Instance resized: %s, new size: %s"
+msgstr ""
+
+#: lib/container.sh:138
+msgid "--output requires a file path."
+msgstr ""
+
+#: lib/container.sh:143
+msgid "--manifest requires a file path."
+msgstr ""
+
+#: lib/container.sh:148
+msgid "--suite requires a release name."
+msgstr ""
+
+#: lib/container.sh:153
+msgid "--arch requires an architecture name."
+msgstr ""
+
+#: lib/container.sh:158
+msgid "--mirror requires a mirror URL."
+msgstr ""
+
+#: lib/container.sh:163
+msgid "--include requires a package list."
+msgstr ""
+
+#: lib/container.sh:168
+msgid "--exclude requires a package list."
+msgstr ""
+
+#: lib/container.sh:177
+msgid "Unknown base-create option: %s"
+msgstr ""
+
+#: lib/container.sh:188
+msgid "Manifest cannot overwrite the tarball."
+msgstr ""
+
+#: lib/container.sh:189
+msgid "Tarball already exists: %s"
+msgstr ""
+
+#: lib/container.sh:190
+msgid "Manifest already exists: %s"
+msgstr ""
+
+#: lib/container.sh:210
+msgid "Base tarball created: %s"
+msgstr ""
+
+#: lib/container.sh:211
+msgid "Manifest created: %s"
+msgstr ""
+
+#: lib/container.sh:225 lib/container.sh:285
+msgid "--network requires a mode."
+msgstr ""
+
+#: lib/container.sh:239
+msgid "Unknown enter option: %s"
+msgstr ""
+
+#: lib/container.sh:267
+msgid ""
+"Entered the isolated Debian environment; type exit to leave the container."
+msgstr ""
+
+#: lib/container.sh:303
+msgid "Usage: exec NAME [--network MODE] -- command [arguments...]"
+msgstr ""
+
+#: lib/container.sh:308 lib/container.sh:346
+msgid "exec requires a command."
+msgstr ""
+
+#: lib/container.sh:341
+msgid "Invalid exec child-process arguments."
+msgstr ""
+
+#: lib/container.sh:362
+msgid "Instance: %s"
+msgstr ""
+
+#: lib/container.sh:363
+msgid "Directory: %s"
+msgstr ""
+
+#: lib/container.sh:364
+msgid "Network: %s"
+msgstr ""
+
+#: lib/container.sh:366
+msgid "Mount: %s"
+msgstr ""
+
+#: lib/container.sh:369
+msgid "Image: exists"
+msgstr ""
+
+#: lib/container.sh:378 lib/storage.sh:22
+msgid "The instance is still mounted: %s"
+msgstr ""
+
+#: lib/container.sh:381
+msgid "Debian instance deleted: %s"
+msgstr ""
+
+#: lib/manifest.sh:36
+msgid "Usage: base-info TARBALL"
+msgstr ""
+
+#: lib/manifest.sh:46
+msgid "Manifest not found: %s"
+msgstr ""
+
+#: lib/manifest.sh:53
+msgid "checksum=match"
+msgstr ""
+
+#: lib/manifest.sh:55
+msgid "checksum=mismatch"
+msgstr ""
+
+#: lib/network.sh:28
+msgid "Invalid network mode: %s (choose none, host, or nat)"
+msgstr ""
+
+#: lib/network.sh:113
+msgid "Bridge: %s"
+msgstr ""
+
+#: lib/network.sh:117
+msgid "Status: does not exist"
+msgstr ""
+
+#: lib/network.sh:120
+msgid "Network namespaces:"
+msgstr ""
+
+#: lib/network.sh:123 lib/network.sh:130
+msgid "  %s"
+msgstr ""
+
+#: lib/network.sh:127
+msgid "Veth interfaces:"
+msgstr ""
+
+#: lib/network.sh:133
+msgid "nftables:"
+msgstr ""
+
+#: lib/network.sh:137
+msgid "  rutils_nat does not exist"
+msgstr ""
+
+#: lib/network.sh:150
+msgid "Keeping active namespace: %s"
+msgstr ""
+
+#: lib/network.sh:154
+msgid "Deleted namespace: %s"
+msgstr ""
+
+#: lib/network.sh:162
+msgid "Deleted veth: %s"
+msgstr ""
+
+#: lib/network.sh:170
+msgid "NAT bridge and nftables rules cleaned."
+msgstr ""
+
+#: lib/network.sh:172
+msgid "Active namespaces exist; keeping veth interfaces."
+msgstr ""
+
+#: lib/network.sh:173
+msgid "Active namespaces exist; keeping NAT bridge and nftables rules."
+msgstr ""
+
+#: lib/profiles.sh:16
+msgid "Invalid profile configuration: %s"
+msgstr ""
+
+#: lib/profiles.sh:27
+msgid "Invalid profile option: %s"
+msgstr ""
+
+#: lib/storage.sh:27
+msgid "The new image size must be greater than the current size: %s bytes"
+msgstr ""
+
+#: lib/storage.sh:33
+msgid "Filesystem check failed: %s"
+msgstr ""
+
+#: lib/storage.sh:45
+msgid "Logical size: %s bytes"
+msgstr ""
+
+#: lib/storage.sh:46
+msgid "Actual usage: %s bytes"
+msgstr ""
+
+#: lib/storage.sh:48
+msgid "Image: does not exist"
+msgstr ""

@@ -33,7 +33,7 @@ dc_manifest_info() {
   local expected
   local actual
 
-  (($# == 1)) || dc_die '用法：base-info TARBALL'
+  (($# == 1)) || dc_die 'Usage: base-info TARBALL'
   dc_require_commands awk sha256sum
 
   if [[ "$input" == *.manifest ]]; then
@@ -43,16 +43,16 @@ dc_manifest_info() {
     manifest="$input.manifest"
     tarball=$input
   fi
-  [[ -f "$manifest" ]] || dc_die "找不到 manifest：$manifest"
+  [[ -f "$manifest" ]] || dc_die 'Manifest not found: %s' "$manifest"
 
   cat "$manifest"
   expected=$(awk -F= '$1 == "sha256" { print $2 }' "$manifest")
   if [[ -f "$tarball" && -n "$expected" ]]; then
     actual=$(sha256sum "$tarball" | awk '{print $1}')
     if [[ "$actual" == "$expected" ]]; then
-      echo 'checksum=match'
+      dc_print 'checksum=match'
     else
-      echo 'checksum=mismatch'
+      dc_print 'checksum=mismatch'
     fi
   fi
 }

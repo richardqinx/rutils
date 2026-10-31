@@ -10,17 +10,17 @@ dc_init() {
   while (($# > 0)); do
     case "$1" in
       --tarball)
-        (($# >= 2)) || dc_die '--tarball 需要一个文件路径。'
+        (($# >= 2)) || dc_die '--tarball requires a file path.'
         tarball=$2
         shift 2
         ;;
       --size)
-        (($# >= 2)) || dc_die '--size 需要一个大小。'
+        (($# >= 2)) || dc_die '--size requires a size.'
         size=$2
         shift 2
         ;;
       --profile)
-        (($# >= 2)) || dc_die '--profile 需要一个文件路径。'
+        (($# >= 2)) || dc_die '--profile requires a file path.'
         profile=$2
         shift 2
         ;;
@@ -29,7 +29,7 @@ dc_init() {
         return 0
         ;;
       *)
-        dc_die "未知的 init 选项：$1"
+        dc_die 'Unknown init option: %s' "$1"
         ;;
     esac
   done
@@ -38,15 +38,15 @@ dc_init() {
 
   if [[ -n "$tarball" ]]; then
     tarball=$(readlink -f -- "$tarball")
-    [[ -f "$tarball" ]] || dc_die "找不到 tarball：$tarball"
+    [[ -f "$tarball" ]] || dc_die 'Tarball not found: %s' "$tarball"
   fi
   if [[ -n "$profile" ]]; then
     profile=$(readlink -f -- "$profile")
-    [[ -f "$profile" ]] || dc_die "找不到 profile：$profile"
+    [[ -f "$profile" ]] || dc_die 'Profile not found: %s' "$profile"
   fi
 
   if [[ -e "$DC_INSTANCE_DIR" ]]; then
-    dc_die "实例已存在：$DC_INSTANCE。请使用 enter 进入，避免覆盖容器数据。"
+    dc_die 'Instance already exists: %s. Use enter to access it instead of overwriting its data.' "$DC_INSTANCE"
   fi
 
   dc_create_image "$size"
@@ -61,7 +61,7 @@ dc_init() {
   else
     dc_profile_write_default "$DC_NETWORK_MODE"
   fi
-  echo "初始化完成。执行 sudo bash $DC_SCRIPT enter $DC_INSTANCE 进入容器。"
+  dc_print 'Initialization complete. Run sudo bash %s enter %s to enter the container.' "$DC_SCRIPT" "$DC_INSTANCE"
 }
 
 dc_resize() {
@@ -70,7 +70,7 @@ dc_resize() {
   while (($# > 0)); do
     case "$1" in
       --size)
-        (($# >= 2)) || dc_die '--size 需要一个大小。'
+        (($# >= 2)) || dc_die '--size requires a size.'
         size=$2
         shift 2
         ;;
@@ -79,15 +79,15 @@ dc_resize() {
         return 0
         ;;
       *)
-        dc_die "未知的 resize 选项：$1"
+        dc_die 'Unknown resize option: %s' "$1"
         ;;
     esac
   done
 
-  [[ -n "$size" ]] || dc_die 'resize 必须指定 --size。'
-  [[ -f "$DC_IMAGE" ]] || dc_die '没有找到镜像，请先运行 init。'
+  [[ -n "$size" ]] || dc_die 'resize requires --size.'
+  [[ -f "$DC_IMAGE" ]] || dc_die 'Image not found; run init first.'
   dc_resize_image "$size"
-  echo "实例已扩容：$DC_INSTANCE，新的大小为 $size"
+  dc_print 'Instance resized: %s, new size: %s' "$DC_INSTANCE" "$size"
 }
 
 dc_init_rootfs() {
@@ -135,37 +135,37 @@ dc_base_create() {
   while (($# > 0)); do
     case "$1" in
       --output)
-        (($# >= 2)) || dc_die '--output 需要一个文件路径。'
+        (($# >= 2)) || dc_die '--output requires a file path.'
         output=$2
         shift 2
         ;;
       --manifest)
-        (($# >= 2)) || dc_die '--manifest 需要一个文件路径。'
+        (($# >= 2)) || dc_die '--manifest requires a file path.'
         manifest=$2
         shift 2
         ;;
       --suite)
-        (($# >= 2)) || dc_die '--suite 需要一个版本名称。'
+        (($# >= 2)) || dc_die '--suite requires a release name.'
         suite=$2
         shift 2
         ;;
       --arch)
-        (($# >= 2)) || dc_die '--arch 需要一个架构名称。'
+        (($# >= 2)) || dc_die '--arch requires an architecture name.'
         arch=$2
         shift 2
         ;;
       --mirror)
-        (($# >= 2)) || dc_die '--mirror 需要一个镜像地址。'
+        (($# >= 2)) || dc_die '--mirror requires a mirror URL.'
         mirror=$2
         shift 2
         ;;
       --include)
-        (($# >= 2)) || dc_die '--include 需要软件包列表。'
+        (($# >= 2)) || dc_die '--include requires a package list.'
         include=$2
         shift 2
         ;;
       --exclude)
-        (($# >= 2)) || dc_die '--exclude 需要软件包列表。'
+        (($# >= 2)) || dc_die '--exclude requires a package list.'
         exclude=$2
         shift 2
         ;;
@@ -174,7 +174,7 @@ dc_base_create() {
         return 0
         ;;
       *)
-        dc_die "未知的 base-create 选项：$1"
+        dc_die 'Unknown base-create option: %s' "$1"
         ;;
     esac
   done
@@ -185,9 +185,9 @@ dc_base_create() {
   else
     manifest=$(readlink -m -- "$manifest")
   fi
-  [[ "$manifest" != "$output" ]] || dc_die 'manifest 不能覆盖 tarball。'
-  [[ ! -e "$output" ]] || dc_die "tarball 已存在：$output"
-  [[ ! -e "$manifest" ]] || dc_die "manifest 已存在：$manifest"
+  [[ "$manifest" != "$output" ]] || dc_die 'Manifest cannot overwrite the tarball.'
+  [[ ! -e "$output" ]] || dc_die 'Tarball already exists: %s' "$output"
+  [[ ! -e "$manifest" ]] || dc_die 'Manifest already exists: %s' "$manifest"
 
   dc_require_commands awk date debootstrap mktemp readlink sha256sum
   mkdir -p "$(dirname -- "$output")"
@@ -207,8 +207,8 @@ dc_base_create() {
   )
 
   dc_manifest_write "$manifest" "$output" "$suite" "${arch:-native}" "$mirror" "$include" "$exclude"
-  echo "基础 tarball 已创建：$output"
-  echo "manifest 已创建：$manifest"
+  dc_print 'Base tarball created: %s' "$output"
+  dc_print 'Manifest created: %s' "$manifest"
 }
 
 dc_enter() {
@@ -222,12 +222,12 @@ dc_enter() {
   while (($# > 0)); do
     case "$1" in
       --network)
-        (($# >= 2)) || dc_die '--network 需要一个模式。'
+        (($# >= 2)) || dc_die '--network requires a mode.'
         network_mode=$2
         shift 2
         ;;
       --mount)
-        (($# >= 2)) || dc_die '--mount 需要一个挂载参数。'
+        (($# >= 2)) || dc_die '--mount requires a mount specification.'
         dc_bind_add "$2"
         shift 2
         ;;
@@ -236,12 +236,12 @@ dc_enter() {
         return 0
         ;;
       *)
-        dc_die "未知的 enter 选项：$1"
+        dc_die 'Unknown enter option: %s' "$1"
         ;;
     esac
   done
 
-  [[ -f "$DC_IMAGE" ]] || dc_die '没有找到镜像，请先运行 init。'
+  [[ -f "$DC_IMAGE" ]] || dc_die 'Image not found; run init first.'
   dc_network_prepare "$network_mode"
   for spec in "${DC_BIND_SPECS[@]}"; do
     bind_args+=(--mount "$spec")
@@ -264,7 +264,7 @@ dc_enter_rootfs() {
   dc_mount_virtual_filesystems
   dc_bind_mount_all
   hostname debian-container
-  echo '已进入独立的 Debian 实验环境；输入 exit 可退出容器。'
+  dc_print 'Entered the isolated Debian environment; type exit to leave the container.'
 
   # 完成挂载后撤销一些宿主级危险权限，保留 CAP_LINUX_IMMUTABLE。
   setpriv --bounding-set=-sys_admin,-net_admin,-net_raw,-sys_module,-sys_boot,-sys_time,-sys_rawio,-sys_ptrace,-syslog -- \
@@ -282,12 +282,12 @@ dc_exec() {
   while (($# > 0)); do
     case "$1" in
       --network)
-        (($# >= 2)) || dc_die '--network 需要一个模式。'
+        (($# >= 2)) || dc_die '--network requires a mode.'
         network_mode=$2
         shift 2
         ;;
       --mount)
-        (($# >= 2)) || dc_die '--mount 需要一个挂载参数。'
+        (($# >= 2)) || dc_die '--mount requires a mount specification.'
         dc_bind_add "$2"
         shift 2
         ;;
@@ -300,13 +300,13 @@ dc_exec() {
         return 0
         ;;
       *)
-        dc_die '用法：exec NAME [--network MODE] -- 命令 [参数...]'
+        dc_die 'Usage: exec NAME [--network MODE] -- command [arguments...]'
         ;;
     esac
   done
 
-  (($# > 0)) || dc_die 'exec 需要一个命令。'
-  [[ -f "$DC_IMAGE" ]] || dc_die '没有找到镜像，请先运行 init。'
+  (($# > 0)) || dc_die 'exec requires a command.'
+  [[ -f "$DC_IMAGE" ]] || dc_die 'Image not found; run init first.'
   dc_network_prepare "$network_mode"
   for spec in "${DC_BIND_SPECS[@]}"; do
     bind_args+=(--mount "$spec")
@@ -328,7 +328,7 @@ dc_exec_rootfs() {
   while (($# > 0)); do
     case "$1" in
       --mount)
-        (($# >= 2)) || dc_die '--mount 需要一个挂载参数。'
+        (($# >= 2)) || dc_die '--mount requires a mount specification.'
         dc_bind_add "$2"
         shift 2
         ;;
@@ -338,12 +338,12 @@ dc_exec_rootfs() {
         break
         ;;
       *)
-        dc_die 'exec 子进程参数格式无效。'
+        dc_die 'Invalid exec child-process arguments.'
         ;;
     esac
   done
 
-  (($# > 0)) || dc_die 'exec 需要一个命令。'
+  (($# > 0)) || dc_die 'exec requires a command.'
   dc_mount_root
   trap dc_cleanup_mounts EXIT
   dc_network_configure_rootfs
@@ -359,25 +359,25 @@ dc_status() {
   local spec
 
   dc_profile_load
-  echo "实例：$DC_INSTANCE"
-  echo "目录：$DC_INSTANCE_DIR"
-  echo "网络：$DC_PROFILE_NETWORK"
+  dc_print 'Instance: %s' "$DC_INSTANCE"
+  dc_print 'Directory: %s' "$DC_INSTANCE_DIR"
+  dc_print 'Network: %s' "$DC_PROFILE_NETWORK"
   for spec in "${DC_BIND_SPECS[@]}"; do
-    echo "挂载：$spec"
+    dc_print 'Mount: %s' "$spec"
   done
   if [[ -f "$DC_IMAGE" ]]; then
-    echo '镜像：存在'
+    dc_print 'Image: exists'
   fi
   dc_status_image
 }
 
 dc_delete() {
-  [[ -d "$DC_INSTANCE_DIR" ]] || { echo 'Debian 实例已不存在。'; return 0; }
+  [[ -d "$DC_INSTANCE_DIR" ]] || { dc_print 'The Debian instance no longer exists.'; return 0; }
   dc_require_commands findmnt
   if findmnt --mountpoint "$DC_ROOT" >/dev/null 2>&1; then
-    dc_die "实例仍处于挂载状态：$DC_INSTANCE"
+    dc_die 'The instance is still mounted: %s' "$DC_INSTANCE"
   fi
   rm -rf -- "$DC_INSTANCE_DIR"
-  echo "Debian 实例已删除：$DC_INSTANCE"
+  dc_print 'Debian instance deleted: %s' "$DC_INSTANCE"
 }
 

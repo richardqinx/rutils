@@ -15,16 +15,16 @@ dc_bind_add() {
   local extra
 
   IFS=: read -r source target mode extra <<< "$spec"
-  [[ -n "$source" && -n "$target" && -z "$extra" ]] || dc_die "挂载参数格式无效：$spec"
-  [[ "$source" = /* && "$target" = /* ]] || dc_die "挂载源和目标必须使用绝对路径：$spec"
-  [[ "$target" != "/" ]] || dc_die '不能把目录挂载到容器根目录。'
+  [[ -n "$source" && -n "$target" && -z "$extra" ]] || dc_die 'Invalid mount specification: %s' "$spec"
+  [[ "$source" = /* && "$target" = /* ]] || dc_die 'Mount source and target must be absolute paths: %s' "$spec"
+  [[ "$target" != "/" ]] || dc_die 'A directory cannot be mounted at the container root.'
 
   mode=${mode:-rw}
-  [[ "$mode" == rw || "$mode" == ro ]] || dc_die "挂载模式无效：$mode"
+  [[ "$mode" == rw || "$mode" == ro ]] || dc_die 'Invalid mount mode: %s' "$mode"
   source=$(readlink -f -- "$source")
-  [[ -d "$source" ]] || dc_die "挂载源不是目录：$source"
+  [[ -d "$source" ]] || dc_die 'Mount source is not a directory: %s' "$source"
   target=$(readlink -m -- "$target")
-  [[ "$target" != "/" ]] || dc_die '不能把目录挂载到容器根目录。'
+  [[ "$target" != "/" ]] || dc_die 'A directory cannot be mounted at the container root.'
 
   DC_BIND_SPECS+=("$source:$target:$mode")
   DC_BIND_SOURCES+=("$source")
@@ -34,8 +34,8 @@ dc_bind_add() {
 
 dc_bind_load_options() {
   while (($# > 0)); do
-    [[ "$1" == --mount ]] || dc_die '挂载参数格式无效。'
-    (($# >= 2)) || dc_die '--mount 需要一个挂载参数。'
+    [[ "$1" == --mount ]] || dc_die 'Invalid mount option.'
+    (($# >= 2)) || dc_die '--mount requires a mount specification.'
     dc_bind_add "$2"
     shift 2
   done

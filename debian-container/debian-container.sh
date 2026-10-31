@@ -39,12 +39,12 @@ esac
 
 case "$DC_ACTION" in
   init|enter|exec|resize|status|delete)
-    (($# > 0)) || dc_die "$DC_ACTION 需要实例名称。"
+    (($# > 0)) || dc_die '%s requires an instance name.' "$DC_ACTION"
     dc_select_instance "$1"
     shift
     ;;
   _init|_enter|_exec)
-    (($# > 0)) || dc_die "$DC_ACTION 需要实例名称。"
+    (($# > 0)) || dc_die '%s requires an instance name.' "$DC_ACTION"
     dc_select_instance "$1"
     shift
     ;;
